@@ -1,0 +1,12 @@
+{
+	"app" :{
+		"host": "localhost",	
+		"port": 3003
+	},
+
+	"db" : {
+		"host": "localhost",
+		"port": 6773
+
+	}
+}

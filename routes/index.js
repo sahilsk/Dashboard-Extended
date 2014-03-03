@@ -4,5 +4,10 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+
+	//res.redirect("/login");
+
+	 res.render('index', { title: 'Dashboard ' });
 };
+
+

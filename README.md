@@ -12,6 +12,14 @@ Pre-requisite:
 2) bower : ~1.2..8
 3) redis
 4) nodemon : 1.0.15
+5) sass
+
+```
+gem install sass
+```
+
+
+
 
 Resolve local Dependencies
 ==============
