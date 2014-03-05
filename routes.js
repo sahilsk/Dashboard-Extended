@@ -13,5 +13,5 @@ module.exports = function(app){
 
 	app.get("/logout", session.logout);
 
-}
+} 
 
