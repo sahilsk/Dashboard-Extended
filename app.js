@@ -7,10 +7,6 @@ var express = require('express');
 var path = require('path');
 var sass = require('node-sass'); 
 var CONFIG = require("config");
-var passport = require("passport");
-var LocalStrategy = require('passport').Strategy;
-
-
 
 
 var app = express();
@@ -36,37 +32,29 @@ if ('development' == app.get('env')) {
 	     sass.middleware({
 		 src: __dirname + '/public/stylesheets/sass', 
 		 dest: __dirname + '/public',
-		 debug: true,
+		 debug: false,
 		 outputStyle: 'compressed' 
 	     })
 	 );
 }
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-
 /*****************************
 ******* Authentication *******
-******************************/
-// passport config
-var Account = require('./models/account');
-passport.use('local-login', new LocalStrategy({	usernameField : 'email',
-	 passwordField : 'password', 
-	 passReqToCallback : true},
-	 Account.authenticate ) );
-passport.serializeUser(Account.serializeUser);
-passport.deserializeUser(Account.deserializeUser);
+*****************************/
+
+ 
 
 
 
-/************************
-*** Routes ********
-************************/
+
+
+
+
+/****************************
+*********** Routes **********
+****************************/
 
 require('./routes.js')(app);
-
 
 module.exports = app;

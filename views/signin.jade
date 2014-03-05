@@ -1,4 +1,11 @@
-extend ../layouts/login
+extend ../templates/login
 
 block content
-	h1 Welcome
+	form.form-signin(role='form', action="/auth", method="post")
+		h2.form-signin-heading Please sign in
+			input.form-control(type='input', placeholder='username', required='required', autofocus='autofocus', name="username")
+		input.form-control(type='password',  placeholder='Password', required='required', name="password")
+		label.checkbox
+			input(type='checkbox', value='remember-me')
+			| Remember me
+		button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in

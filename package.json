@@ -5,10 +5,10 @@
   "main": "app.js",
   "engine": "node >= 0.10.5",
   "scripts": {
-    "start": "nodemon server.js",
-    "watch": "nodemon server.js",
-    "test": " echo \"not yet completed\" ",
-    "testwatch": "nodemon server.js",
+    "start": "NODE_ENV=development node server.js",
+    "watch": "NODE_ENV=development nodemon server.js",
+    "test": "mocha test",
+    "testwatch": "mocha test -G -w",
     "browserify": "browserify public/javascripts/client/index.js -o public/javascripts/bundle.js"
   },
   "repository": {
@@ -37,14 +37,13 @@
     "eson": "~0.5.0",
     "acl": "~0.2.6",
     "email": "~0.2.6",
-    "random-json": "0.0.2",
-    "passport": "~0.2.0",
-    "passport-local": "~0.1.6"
+    "random-json": "0.0.2"
   },
   "devDependencies": {
     "nodemon": "~1.0.15",
     "mocha": "~1.17.1",
     "should": "~3.1.3",
     "zombie": "~2.0.0-alpha30"
+    "superagent": "~0.16.0"
   }
 }
