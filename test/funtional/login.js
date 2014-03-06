@@ -2,28 +2,9 @@ process.env.NODE_ENV = 'test'
 
 
 var http = require("http");
-var CONFIG = require("config");
-
-var app = require('../../app.js');
+var CONFIG = require('config');
 
 
-describe('login page',function(){
+var server = require("../shared/test_util.js");
+var siteRootUrl = 'http://localhost:' + CONFIG.app.port;
 
-	before( function(){
-		this.server = http.createServer(app).listen( CONFIG.app.port, function(){
-		  console.log('Test Express server listening on port  (' + CONFIG.app.port+ ') '
-		   + process.env.NODE_ENV);
-		});
-	});
-
-
-	it("should show login page if user not logged in");
-	it("should validate inputs(email)");
-	it("should show index page if user logged in");
-
-	after( function(done){
-		this.server.close(done);
-	})
-
-
-});

@@ -1,13 +1,15 @@
 exports.index = function (req, res) {
   if (req.session && req.session.user)
     res.redirect('/');
-  res.render('signin', { title: 'Sign in' });
+  res.render('sessions/signin', { title: 'Sign in' });
 };
 exports.auth = function (req, res) {
   if (!req.body.hasOwnProperty('username') || !req.body.hasOwnProperty('password')) {
     res.status(401);
     console.log('Not Authorized. Please sign in first');
-    req.session.messages = 'Not Authorized. Please sign in first';
+    req.session.messages = {  
+     errors: ['Not Authorized. Please sign in first' ]
+    };    
     res.send('Unauthorized Access <a href=\'/login\'>login here </a> ');
     return;
   }
@@ -16,13 +18,17 @@ exports.auth = function (req, res) {
     var u = User.where({ username: req.body.username })[0];
     if (!u) {
       console.log('Invalid credentials ', req.body.username);
-      req.session.messages = 'Invalid credentials';
+      req.session.messages = {  
+       errors: [ 'Invalid credentials' ]
+      };     
       res.redirect('/login');
       return;
     }
     if (u.password === req.body.password) {
-      console.log('valid user found');
-      req.session.messages = 'Welcome, ' + u.username;
+      console.log('User Authenticated');
+      req.session.messages = {  
+       success: [ 'Welcome, ' + u.username ]
+      };      
       req.session.user = {
         username: u.username,
         id: u.id
@@ -31,7 +37,9 @@ exports.auth = function (req, res) {
       return;
     } else {
       console.log('Invalid user ', req.body.username);
-      req.session.messages = 'Invalid credentials';
+      req.session.messages = {  
+       errors: [ 'Invalid credentials' ]
+      };
       res.redirect('/login');
       return;
     }

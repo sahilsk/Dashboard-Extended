@@ -22,6 +22,11 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
+app.use(function(req, res, next) {
+  res.locals.messages = req.session.messages
+  req.session.messages = "";
+  next();
+})
 app.use(app.router);
 
 // development only

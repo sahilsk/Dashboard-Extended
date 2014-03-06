@@ -6,12 +6,12 @@ head
     meta(name='viewport', content='width=device-width, initial-scale=1')
     meta(name='description', content='')
     meta(name='author', content='')
-    link(rel='shortcut icon', href='../../assets/ico/favicon.ico')
+    link(rel='shortcut icon', href='/ico/favicon.ico')
     title= title
     // Bootstrap core CSS 
-    link(href='bootstrap/css/bootstrap.min.css', rel='stylesheet')
+    link(href='/bootstrap/css/bootstrap.min.css', rel='stylesheet')
     // Custom styles for this template 
-    link(href='stylesheets/dashboard.css', rel='stylesheet')
+    link(href='/stylesheets/dashboard.css', rel='stylesheet')
     // HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries 
     //if lt IE 9
       script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
@@ -35,6 +35,7 @@ head
             li
               a(href='#', data-toggle='dropdown') Profile
               ul(class="dropdown-menu", role="menu", aria-labelledby="dLabel")
+                li(role="presentation" class="glyphicon glyphicon-user") &nbsp;Hi, #{username}
                 li(role="presentation", class="divider")
                 li(role="presentation")
                   a(role="menuitem", tabindex="-1", href="/logout", class="glyphicon glyphicon-log-out") &nbsp; logout
@@ -57,6 +58,13 @@ head
               a(href='#') Export
           ul.nav.nav-sidebar
             li
+              a(href='') Docklets 
+            li 
+              a(href='/screens/new') Add New Screen
+ 
+
+          ul.nav.nav-sidebar
+            li
               a(href='') Nav item
             li
               a(href='') Nav item again
@@ -74,55 +82,17 @@ head
             li
               a(href='') Another nav item
         .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
-          h1.page-header Welcome, #{username}
-          .row.placeholders
-            .col-xs-6.col-sm-3.placeholder
-              img.img-responsive(data-src='holder.js/200x200/auto/sky', alt='Generic placeholder thumbnail')
-              h4 Label
-              span.text-muted Something else
-            .col-xs-6.col-sm-3.placeholder
-              img.img-responsive(data-src='holder.js/200x200/auto/vine', alt='Generic placeholder thumbnail')
-              h4 Label
-              span.text-muted Something else
-            .col-xs-6.col-sm-3.placeholder
-              img.img-responsive(data-src='holder.js/200x200/auto/sky', alt='Generic placeholder thumbnail')
-              h4 Label
-              span.text-muted Something else
-            .col-xs-6.col-sm-3.placeholder
-              img.img-responsive(data-src='holder.js/200x200/auto/vine', alt='Generic placeholder thumbnail')
-              h4 Label
-              span.text-muted Something else
-          h2.sub-header Section title
-          .table-responsive
-            table.table.table-striped
-              thead
-                tr
-                  th #
-                  th Header
-                  th Header
-                  th Header
-                  th Header
-              tbody
-                tr
-                  td 1,001
-                  td Lorem
-                  td ipsum
-                  td dolor
-                  td sit
-                tr
-                  td 1,002
-                  td amet
-                  td consectetur
-                  td adipiscing
-                  td elit
+          include ../views/_partials/_notifications.jade
+          block content
+
 
     // Bootstrap core JavaScript
     //     ================================================== 
     
        Placed at the end of the document so the pages load faster 
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
-    script(src='bootstrap/js/bootstrap.min.js')
-    script(src='bootstrap/js/dropdown.js')
+    script(src='/bootstrap/js/bootstrap.min.js')
+    script(src='/bootstrap/js/dropdown.js')
     script
       |$(document).ready( function(){
       |});
