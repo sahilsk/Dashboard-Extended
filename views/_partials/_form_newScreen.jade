@@ -1,0 +1,28 @@
+
+h1 Create New Screen
+
+-if(screen_name)
+	div(class="alert alert-danger alert-dismissable")
+		button(type="button" class="close" data-dismiss="alert" aria-hidden="true")
+		strong Screen Name! 
+		= screen_name
+
+
+form(method='POST', action='/screens/create', class="form-horizontal", role="form")
+	.form-group
+		label(for="screen_name", class="col-sm-2 control-label") Name
+		.col-sm-10
+			input( type="input", class="form-control",name="screen_name", id="screen_name", placeholder="new screen name")
+
+	.form-group
+		label(for="desc", class="col-sm-2 control-label") Description
+		.col-sm-10
+			textarea( class="form-control" rows="3", id="screen_desc" , name="screen_desc")
+
+
+	.form-group
+		div(class="col-sm-offset-2 col-sm-10")
+			button( type="submit", class="btn btn-default") Submit 
+
+
+
