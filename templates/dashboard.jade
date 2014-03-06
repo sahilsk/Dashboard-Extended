@@ -56,9 +56,14 @@ head
               a(href='#') Analytics
             li
               a(href='#') Export
+            hr
+
           ul.nav.nav-sidebar
-            li
-              a(href='') Docklets 
+            -screens.forEach(function(s){
+              li
+                a(href='/screens/' +s.id)= s.name 
+            -})
+            
             li 
               a(href='/screens/new') Add New Screen
  

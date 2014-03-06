@@ -33,6 +33,7 @@ describe("Screen :", function () {
   });
 
   describe("Create New Screen Form :", function(){
+      var screenRecord = {screen_name:"Screen_Test01", screen_desc:"Screen_Test01 desc"};
 
       it("should deny direct post request without fields", function(done){
         agent
@@ -55,7 +56,7 @@ describe("Screen :", function () {
           if(err)
             throw err;
           res.status.should.be.exactly(200); 
-          res.text.should.include("Should not be empty");
+          res.text.should.include("should not be empty");
           done();
         });
       });
@@ -75,7 +76,6 @@ describe("Screen :", function () {
 
       it("should not create duplicate screen", function(done){
 
-        var screenRecord = {screen_name:"Screen_Test01", screen_desc:"Screen_Test01 desc"};
 
         agent
         .post(siteRootUrl+"/screens/create")
@@ -86,10 +86,36 @@ describe("Screen :", function () {
           res.status.should.be.exactly(200); 
           res.text.should.include("Screen with name " + screenRecord.screen_name + " already exist");
           done();
-        });  
+        }); 
+      });
 
+      it("should be able to open screen", function(done){
+        agent
+        .get(siteRootUrl + "/screens/" + screenRecord.screen_name)
+        .end( function(err, res){
+          if(err)
+              throw err;
+          res.status.should.be.exactly(200);
+          done();
+
+        });
 
       });
+
+      it("redirect to / if screen doesn't exist", function(done){
+        agent
+        .get(siteRootUrl + "/screens/" + "invalidscreen")
+        .end( function(err, res){
+          if(err)
+              throw err;
+          res.redirects.should.eql([siteRootUrl +"/"] );
+          res.text.should.include("screen not found");
+          done();
+
+        })
+
+      });
+
 
 
 

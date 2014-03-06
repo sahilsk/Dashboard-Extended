@@ -1,9 +1,30 @@
 
+exports.show = function(req, res){
+
+	if( !req.session.screen){
+		req.session.messages = {  
+	       errors:  ["screen not found"]
+	    }; 		
+		res.redirect("/");
+		return;
+	}
+	
+	var data = {
+		username: req.session.user.username,
+		title:"Screen : ",
+		screens:require("../models/screen.js").all(),
+		screen:req.session.screen
+	}	;
+	res.render("screens/show", data	);
+}
+
+
 
 exports.new  = function(req, res){
 	var data = {
 		username: req.session.user.username,
-		title:"Screen : Create New"
+		title:"Screen : Create New",
+		screens:require("../models/screen.js").all()
 	}	;
 	res.render("screens/new", data	);
 
@@ -18,16 +39,21 @@ exports.create = function(req, res){
 		return;
 	}
 
-	//Validate input fields
-	if( !req.body.screen_name.length ){
-		var errors = {"screen_name": "Should not be empty."};
-		res.render("screens/new", errors);
-		return;
-	}
-
-	//Create new screen
 	var t_screen = {name:req.body.screen_name, desc: req.body.screen_desc};
 	var Screen = require("../models/screen");
+
+	//Validate Input params
+	if( !Screen.validate(t_screen) ){
+		req.session.messages = {  
+	       errors:  Screen.errors
+	      }; 		
+      	res.redirect("screens/new");
+       
+		return ;
+	}
+
+
+	//Create new screen
 	if( Screen.save( t_screen ) ){
 		console.log("Screen created successfully");
 		req.session.messages = {	
@@ -39,8 +65,10 @@ exports.create = function(req, res){
 
 	}else{
 		console.log("Failed to create screen: ", Screen.errors.join() );
-		var errors = {"screen_name":  Screen.errors.join() };
-		res.render("screens/new", errors);		
+		req.session.messages = {  
+	       errors:  Screen.errors
+	      }; 		
+      	res.redirect("screens/new");	
 		return;
 	}
 	
