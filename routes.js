@@ -19,7 +19,7 @@ module.exports = function(app){
 //SCREENS: CREATE, EDIT, DELETE, UPDATE
 	app.get('/screens/new', authMWare.isLoggedIn, screen.new);
 	app.post('/screens/create', authMWare.isLoggedIn, screen.create);
-	app.get('/screens/:id', screenMWare.fetchScreen, screen.show);
+	app.get('/screens/:id', [authMWare.isLoggedIn,screenMWare.fetchScreen], screen.show);
 
 
 
