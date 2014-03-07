@@ -1,0 +1,69 @@
+
+h1 Create New Widget
+
+-if(screen_name)
+	div(class="alert alert-danger alert-dismissable")
+		button(type="button" class="close" data-dismiss="alert" aria-hidden="true")
+		strong Screen Name! 
+		= screen_name
+
+
+form(method='POST', action='/widgets/create', class="form-horizontal", role="form")
+	.form-group
+		label(for="fetch_url", class="col-sm-2 control-label") URL
+		.col-sm-10
+			input( type="url", class="form-control",name="fetch_url", id="fetch_url", placeholder="eg. http://abc.com/users.json?like=sk")
+
+	.form-group
+		label(for="data_template", class="col-sm-2 control-label") Data Template
+		.col-sm-10
+			textarea( class="form-control" rows="3", id="data_template" , name="data_template")
+
+	.form-group
+		label(for="pre_data", class="col-sm-2 control-label") Pre Data
+		.col-sm-10
+			textarea( class="form-control" rows="3", id="pre_data" , name="pre_data")
+	
+	.form-group
+		label(for="post_data", class="col-sm-2 control-label") Post Data
+		.col-sm-10
+			textarea( class="form-control" rows="3", id="post_data" , name="post_data")
+
+	.form-group
+		label(for="data_schema", class="col-sm-2 control-label") Validation Schema
+		.col-sm-10
+			textarea( class="form-control" rows="3", id="data_schema" , name="data_schema") 
+
+	.form-group
+		label(for="rep_scheme", class="col-sm-2 control-label") Representational Scheme
+		.col-sm-10
+			select( class="form-control" rows="3", id="rep_scheme" , name="rep_scheme")
+				option Table
+
+	.form-group
+		label(for="tbl_set", class="col-sm-2 control-label") Table Setting
+		.col-sm-10
+			input( type="input", class="form-control",name="fetch_url", id="fetch_url", placeholder="col01; col02; col03")
+
+	.form-group
+		label(for="tbl_event", class="col-sm-2 control-label") Bind Event
+		.col-sm-10
+			input( type="input", class="form-control",name="fetch_url", id="fetch_url", placeholder="onClick col3")
+
+		label(for="tbl_event", class="col-sm-2 control-label") Action Event
+		.col-sm-10
+			select( class="form-control" rows="3", id="rep_scheme" , name="rep_scheme")
+				option Launch Widget
+				option Run Script
+
+	.form-group
+		label(for="update_freq", class="col-sm-2 control-label") Update Frequency Scheme
+		.col-sm-10
+			input( type="input", class="form-control",name="update_freq", id="update_freq", placeholder="3000 for 3 seconds")
+
+	.form-group
+		div(class="col-sm-offset-2 col-sm-10")
+			button( type="submit", class="btn btn-default") Submit 
+
+
+

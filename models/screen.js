@@ -2,15 +2,15 @@ var _ = require("underscore");
 var uuid = require('node-uuid');
 
 var screens = [
-	{ id: "abc", name:"screen01", 	desc:"screen01 desc"} ,
-	{ id: "abc2", name:"screen02", 	desc:"screen02 desc"} 
+	{ id: "abc", name:"screen01", 	desc:"screen01 desc", widgets: ["2348hdjfhui434"	] } ,
+	{ id: "abc2", name:"screen02", 	desc:"screen02 desc",  widgets: ["2348hdjfhui434"	]} 
 	];
 
 var Screen = {
 
 	screens : screens,
 	all: function(){
-			return screens
+			return this.screens
 	},
 	errors: [],
 	validate: function(obj){
@@ -54,6 +54,17 @@ var Screen = {
 	find: function(id){
 		console.log( "searching for ", id);
 		return _.where(this.all(), {id:id});
+	},
+
+	destroy: function(obj){
+		console.log("Deleting ", obj.name);
+
+		var filtered = _.filter(this.screens, function(dbRec){
+			return obj.id !== dbRec.id
+		});
+		this.screens = filtered;
+
+
 	}
 
 }

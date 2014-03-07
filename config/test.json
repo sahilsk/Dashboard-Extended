@@ -1,6 +1,6 @@
 {
 	"app" :{
-		"host": "localhost",	
+		"host": "http://localhost",	
 		"port": 3003
 	},
 

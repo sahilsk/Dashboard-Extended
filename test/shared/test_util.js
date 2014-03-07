@@ -4,8 +4,10 @@ var http = require('http');
 var CONFIG = require('config');
 var app = require('../../app')
 
+exports.siteRootUrl = CONFIG.app.host +":" + CONFIG.app.port;
 
-var srvCtl = {
+
+exports.srvCtl = {
 	server : null,
 	start  : function(port){
 				console.log('Starting app on port: %s, %s',port, process.env.NODE_ENV);
@@ -26,4 +28,18 @@ var srvCtl = {
 }
 
 
-module.exports = srvCtl;
+exports.loginUser = function(agent, done) {
+var user = {
+    username: 'sahilsk',
+    password: 'abc'
+  };
+agent.post(this.siteRootUrl + '/auth').send(user).end(function (error, res) {
+  if (error)
+    throw error;
+  res.status.should.be.exactly(200);
+  res.text.should.containEql('Welcome, ', user.username);
+  return done();
+});
+}  
+
+

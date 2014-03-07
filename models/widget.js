@@ -1,0 +1,85 @@
+var _ = require("underscore");
+var uuid = require('node-uuid');
+
+var widgets = [
+	{
+		id: "2348hdjfhui434",
+	 	url:"http://50.18.225.222:4273/containers/json?all=1",
+	 	data_template: "",
+	 	pre_data:"",
+	 	post_data:"",
+	 	validation_schema:"",
+	 	repr_scheme:"Table",
+	 	repr_setting:{
+	 		columns: [
+	 			 { name: 'Id'		, type: 'string'},
+	 			 {  name: 'Image'	, type:'string'	},		
+	 			 {  name: 'Command'	, type:'string'	},	
+	 			 {  name: 'Created'	, type:'number'	},
+	 			 {  name:'Status'	, type:'string'	},	
+	 			 {  name:'Ports'		, type:'string'	},	
+	 			 {  name:'SizeRw'	, type:'number'	},
+	 			 {  name:'SizeRootFs', type:'number'	},	
+	 			 {  name:'Names'		, type:'string'	}	
+	 		],
+	 		showRowNumber: true
+	 	},
+	 	events:{},
+	 	setting:{}
+	} 
+
+	];
+
+var Widget = {
+
+	screens : widgets,
+	all: function(){
+			return widgets;
+	},
+	errors: [],
+	validate: function(obj){
+		this.errors = [];
+		
+		//REQUIRED
+		if( !obj.hasOwnProperty("name")  ||
+			!obj.hasOwnProperty("desc") ){
+			console.log('Require attributes absent');
+			this.errors.push('Require attributes absent');
+		}
+
+		//Name.length > 0
+		if( obj.name.length == 0){
+			this.errors.push( "Screen name should not be empty");
+		}
+
+		//Name should be unique
+		if( _.where(this.all(), {name:obj.name}).length > 0){
+			this.errors.push("Screen with name " + obj.name + " already exist");
+		}
+		if( this.errors.length ==0)
+			return true;
+		else
+			return false;
+
+	},
+
+	save :function(obj){
+		this.errors = [];
+		if(  this.validate(obj) ){
+			obj.id = uuid.v1();
+			this.screens.push(obj);			
+			return true;
+		}else{
+			return false;
+		}
+
+	},
+
+	find: function(id){
+		console.log( "searching for ", id);
+		return _.where(this.all(), {id:id});
+	}
+
+}
+
+module.exports = Widget;

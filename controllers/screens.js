@@ -13,12 +13,10 @@ exports.show = function(req, res){
 		username: req.session.user.username,
 		title:"Screen : ",
 		screens:require("../models/screen.js").all(),
-		screen:req.session.screen
+		screen:req.session.screen	
 	}	;
 	res.render("screens/show", data	);
 }
-
-
 
 exports.new  = function(req, res){
 	var data = {
@@ -72,7 +70,24 @@ exports.create = function(req, res){
 		return;
 	}
 	
+}
 
+exports.delete = function(req, res){
 
+	if( !req.session.screen){
+		req.session.messages = {  
+	       errors:  ["screen not found"]
+	    };	
+	}else{
+		var Screen = require("../models/screen");
+		Screen.destroy( req.session.screen);
+		req.session.messages={
+			success:["Screen " + req.session.screen.name + " deleted successfully"]
+		}
+		req.session.screen = null;
+	}
 
+	res.redirect("/");
+	return;	
+	
 }
