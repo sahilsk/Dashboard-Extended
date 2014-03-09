@@ -1,27 +1,21 @@
+var Handlebars = require("Handlebars");
 
-
-
-Handlebars.registerHelper('columns', function(colsData, options) {
-  var out = "<tr>";
-
-  for(var i=0, l=colsData.length; i<l; i++) {
-    out = out + "<th>" + options.fn(colsData[i]) + "</th>";
-  }
-
-  return out + "</tr>";
+Handlebars.registerHelper('col', function() {
+  return "<th>" + this.name+ " "  + "</th>";
 });
 
-Handlebars.registerHelper('body', function(rows, cols ) {
-  var tbody = "";
-
+Handlebars.registerHelper('body', function(rows , cols, options) {
+  var out = "";
    rows.forEach( function(row){ 
-		tbody += "<tr>" ;
+		out += "<tr> " ;
 		cols.forEach( function(col){
-			out = out + "<td>" + row[col] + "</td>";
+			out= out + "<td>" + row[col.name] + "</td>";
 		});
-		tbody += "<tr>" ;
+		out += " </tr>" ;
 
   });
 
-  return tbody ;
+  return out;
 });
+
+module.exports = Handlebars;

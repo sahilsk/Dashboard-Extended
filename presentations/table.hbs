@@ -1,9 +1,13 @@
 <table class="table table-striped table-bordered table-hover table-condensed" >
 	<thead>
-        	{{ #columns cols }}	{{ name}}	{{ /columns }}
-    </thead>
+	  <tr>
+	  {{#each cols}}
+	    {{{col}}}
+	  {{/each}}
+	  </tr>
+	</thead>
 	<tbody>
-		{{ #body rows cols }}
+             {{#body rows cols}} {{/body}}
 	</tbody>
 
 

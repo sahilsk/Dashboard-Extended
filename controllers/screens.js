@@ -8,14 +8,68 @@ exports.show = function(req, res){
 		res.redirect("/");
 		return;
 	}
+	var Handlebars =  require("../hbs_helpers/hbs_helpers.js");	
+	var fs = require("fs");
+	var JSONParse = require('json-literal-parse')
+
+	var source = fs.readFileSync( "presentations/table.hbs").toString();
+	var context = {
+		cols : req.session.screen.widgets[0].repr_setting.columns
+	};
 	
-	var data = {
-		username: req.session.user.username,
-		title:"Screen : ",
-		screens:require("../models/screen.js").all(),
-		screen:req.session.screen	
-	}	;
-	res.render("screens/show", data	);
+	
+	var request = require('request')
+  , es = require('event-stream')
+  , async = require("async")
+
+   var template = "";
+    async.series( [
+    	function(cb){
+			request('http://50.18.225.222:4273/containers/json?all=1',  function (error, response, body) {
+				if (!error && response.statusCode == 200) {
+					try{
+						remoteData = JSONParse(body);
+						context.rows = remoteData;
+					}catch(err){
+						console.log("ERROR:::::::::::::::::::::::::: Invalid json");
+						cb("Invalid JSON", null);
+						return;
+					}
+		    		cb(null);
+				}else
+					cb(error, null)
+			})
+    	}, 
+     	function(cb){
+     		template = Handlebars.compile(source);
+			console.log(	template(context) );
+     		cb(null);
+     	}],
+    	function(err, results){
+    		if(err)	console.log(err);
+			/*
+			var html = template(req.session.screen.widgets[0]);
+			console.log("tempatle:::::", html);
+			*/
+			var data = {
+				username: req.session.user.username,
+				title:"Screen : ",
+				widget: template(context),
+				screens:require("../models/screen.js").all(),
+				screen:req.session.screen	
+			}	;
+			
+			
+			res.render("screens/show", data	);
+    		
+    	});
+
+	
+	
+	
+
+	
+
 }
 
 exports.new  = function(req, res){
