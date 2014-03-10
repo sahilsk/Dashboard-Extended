@@ -13,7 +13,6 @@ exports.new  = function(req, res){
 		widgets:require("../models/widget.js").all()
 	}	;
 	res.render("widgets/new", data	);
-
 }
 
 
@@ -33,7 +32,7 @@ exports.create = function(req, res){
 }
 
 exports.load_widget = function(id, params){
-	
+
 
 
 
