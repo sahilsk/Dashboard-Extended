@@ -1,6 +1,8 @@
 
 exports.show = function(req, res){
 
+	var  async = require("async");
+
 	if( !req.session.screen){
 		req.session.messages = {  
 	       errors:  ["screen not found"]
@@ -12,63 +14,34 @@ exports.show = function(req, res){
 	var fs = require("fs");
 	var JSONParse = require('json-literal-parse')
 
-	var source = fs.readFileSync( "presentations/table.hbs").toString();
-	var context = {
-		cols : req.session.screen.widgets[0].repr_setting.columns
-	};
-	
-	
-	var request = require('request')
-  , es = require('event-stream')
-  , async = require("async")
+	var screen = req.session.screen;
 
-   var template = "";
-    async.series( [
-    	function(cb){
-			request('http://50.18.225.222:4273/containers/json?all=1',  function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					try{
-						remoteData = JSONParse(body);
-						context.rows = remoteData;
-					}catch(err){
-						console.log("ERROR:::::::::::::::::::::::::: Invalid json");
-						cb("Invalid JSON", null);
-						return;
-					}
-		    		cb(null);
-				}else
-					cb(error, null)
-			})
-    	}, 
-     	function(cb){
-     		template = Handlebars.compile(source);
-			console.log(	template(context) );
-     		cb(null);
-     	}],
-    	function(err, results){
-    		if(err)	console.log(err);
-			/*
-			var html = template(req.session.screen.widgets[0]);
-			console.log("tempatle:::::", html);
-			*/
+	var widgets = [];
+	var  arr_widHTML = [];
+
+	var  widgetUtil = require("../lib/widget_util.js");
+
+
+	async.each(screen.widgets, 
+		function(w, cb){
+			widgetUtil.render_widget(w, function(w_html){
+				arr_widHTML.push(w_html);
+				cb(null);
+			});
+
+		}, function(err){
+			console.log( arr_widHTML[0] );
 			var data = {
 				username: req.session.user.username,
 				title:"Screen : ",
-				widget: template(context),
+				widgets: arr_widHTML,
 				screens:require("../models/screen.js").all(),
 				screen:req.session.screen	
 			}	;
 			
 			
-			res.render("screens/show", data	);
-    		
-    	});
-
-	
-	
-	
-
-	
+			res.render("screens/show", data	);			
+		});	
 
 }
 

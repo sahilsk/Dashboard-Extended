@@ -13,4 +13,7 @@ block content
 			button( type="submit", class="btn btn-default") Delete Screen 
 
 		//show widgets
-		!= widget
+		-widgets.forEach( function(w){
+			!= w
+		-})
+		

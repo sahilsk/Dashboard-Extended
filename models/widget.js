@@ -26,7 +26,32 @@ var widgets = [
 	 	},
 	 	events:{},
 	 	setting:{}
-	} 
+	} ,
+	{
+		id: "2348hdjfhui45",
+	 	url:"http://50.18.225.222:4273/containers/json?all=1",
+	 	data_template: "",
+	 	pre_data:"",
+	 	post_data:"",
+	 	validation_schema:"",
+	 	repr_scheme:"Table",
+	 	repr_setting:{
+	 		columns: [
+	 			 { name: 'Id'		, type: 'string'},
+	 			 {  name: 'Image'	, type:'string'	},		
+	 			 {  name: 'Command'	, type:'string'	},	
+	 			 {  name: 'Created'	, type:'number'	},
+	 			 {  name:'Status'	, type:'string'	},	
+	 			 {  name:'Ports'		, type:'string'	},	
+	 			 {  name:'SizeRw'	, type:'number'	},
+	 			 {  name:'SizeRootFs', type:'number'	},	
+	 			 {  name:'Names'		, type:'string'	}	
+	 		],
+	 		showRowNumber: true
+	 	},
+	 	events:{},
+	 	setting:{}
+	} 	
 
 	];
 

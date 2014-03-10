@@ -1,4 +1,4 @@
-var Handlebars = require("Handlebars");
+var Handlebars = require("handlebars");
 
 Handlebars.registerHelper('col', function() {
   return "<th>" + this.name+ " "  + "</th>";

@@ -2,7 +2,7 @@ var _ = require("underscore");
 var uuid = require('node-uuid');
 
 var screens = [
-	{ id: "abc", name:"screen01", 	desc:"screen01 desc", widgets: ["2348hdjfhui434"	] } ,
+	{ id: "abc", name:"screen01", 	desc:"screen01 desc", widgets: ["2348hdjfhui434", "2348hdjfhui45"	] } ,
 	{ id: "abc2", name:"screen02", 	desc:"screen02 desc",  widgets: ["2348hdjfhui434"	]} 
 	];
 

@@ -31,3 +31,10 @@ exports.create = function(req, res){
 	res.send("W.I.P");
 
 }
+
+exports.load_widget = function(id, params){
+	
+
+
+
+}

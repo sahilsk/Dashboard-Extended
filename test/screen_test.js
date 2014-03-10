@@ -131,4 +131,20 @@ describe('Screen :', function () {
 
   });
 
+  it("should render widget", function(done){
+    agent.get(testUtil.siteRootUrl + '/screens/abc').end(function (err, res) {
+      if (err)
+        throw err;
+      res.status.should.be.exactly(200);
+      res.text.toLowerCase().should.include("widget_", "Widgets not found");
+      done();
+    });
+
+
+
+  })
+
+
+
+
 });
