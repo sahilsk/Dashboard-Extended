@@ -32,8 +32,6 @@ properties = {
 	}
 }
 
-
-
 User  = new Model('User',properties);
 
 
