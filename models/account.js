@@ -67,19 +67,31 @@ exports.User =
 								}else{
 									util.log("Failed to save user");
 								}
-
-							}); 
-						
-						}
-					
+							}); 						
+						}					
 					});
-
 				}
 		})
-
-
 	},
-
+	
+	update: function( user, callback){
+			this.validate(user, function(err, pass){
+				if(!pass){
+					util.log("Unable to save. Validation failed");
+					util.log("Erros: %s", err);
+				}else{
+					//VALIDATION PASSED -> SAVE()
+					var redisClient =  redis.createClient(CONFIG.port, CONFIG.hostname);		
+					redisClient.hmset( TABLE_NAME.singular+":"+user.id, user, function(err,success){
+						if(!err){
+							util.log("user saved successfully");
+						}else{
+							util.log("Failed to save user");
+						}
+					}); 						
+				}
+		})
+	},
 
 	find : function(id, callback){
 		var iUser = null;
