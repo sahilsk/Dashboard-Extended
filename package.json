@@ -45,7 +45,8 @@
     "JSONStream": "~0.8.0",
     "request": "~2.34.0",
     "event-stream": "~3.1.0",
-    "json-literal-parse": "0.0.0"
+    "json-literal-parse": "0.0.0",
+    "hiredis": "~0.1.16"
   },
   "devDependencies": {
     "nodemon": "~1.0.15",

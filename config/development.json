@@ -4,9 +4,9 @@
 		"port": 3001
 	},
 
-	"db" : {
+	"redis" : {
 		"host": "localhost",
-		"port": 6773
+		"port": 6379
 
 	}
 }
