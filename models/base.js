@@ -176,14 +176,15 @@ Base.prototype.factory =function(modelName){
 			if( this.DB_MODEL.hasOwnProperty(key) ){
 				Object.defineProperty( this, key, {
 				    get: function() {
-				    	if( this.key === undefined)
+				    	if( this[key] === undefined)
 				    		return null;
-				        return this.key;
+				        return this[key];
 				    },
 				    set: function(value) {
-				        this.key = value;
+				        this[key] = value;
 				    }
 				});
+				this[key] = data[key];
 
 			}else{
 				console.log(" Unknown property : %s", key);
@@ -210,7 +211,12 @@ Base.prototype.factory =function(modelName){
 					}
 
 					//Populate object hash
-					f
+					
+					for( key in properties ){
+
+
+					}
+					var tHash = 
 
 
 					//redisClient.hmset(  this.modelName+":" + this.id, )

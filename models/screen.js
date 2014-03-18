@@ -62,6 +62,8 @@ screen.p(
 	}
 );
 
+ console.log(screen);
+
 
 screen.save( function(errors, isSaved ){
 
