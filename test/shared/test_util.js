@@ -29,17 +29,17 @@ exports.srvCtl = {
 
 
 exports.loginUser = function(agent, done) {
-var user = {
-    username: 'sahilsk',
-    password: 'abc'
-  };
-agent.post(this.siteRootUrl + '/auth').send(user).end(function (error, res) {
-  if (error)
-    throw error;
-  res.status.should.be.exactly(200);
-  res.text.should.containEql('Welcome, ', user.username);
-  return done();
-});
-}  
+						var user = {
+						    username: 'sahilsk',
+						    password: 'admin'
+						  };
+						agent.post(this.siteRootUrl + '/auth').send(user).end(function (error, res) {
+						  if (error)
+						    throw error;
+						  res.status.should.be.exactly(200);
+						  res.text.should.include('Welcome, ', user.username, "Should login user with correct credentials");
+						  return done();
+						});
+					}  
 
 

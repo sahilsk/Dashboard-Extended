@@ -1,30 +1,52 @@
 var _ = require("underscore");
 var Base = require("./base.js");
 var uuid = require('node-uuid');
-
+var redisClient = require("../db");
+var CONFIG = require("config");
+var async = require("async");
 
 /*
 
 ###########  Add New Screen
-zadd screens timestamp id
+zadd screens timestamp isSaved// SCREEN LIST
 hmset screen:id title xxx description xxx 
+----------- After adding widget
+zadd screen-widgets:screen_id   timestamp  widget_id
 
 
 ###########  Retrive Screen
 zscore screens id == nil  >> Return record not found
 hgetall "screen:id" >> { k:v, k:v,[,]}
 
+
+DATABASE
+========================
+zadd screens 1395306635123 e50e1468-b057-41b0-8cb7-7a99c6ad26b6
+zadd screens 1395306691862 5ba6ba85-a808-4d8a-bec1-324f5874c026
+
+
+HMSET screen:e50e1468-b057-41b0-8cb7-7a99c6ad26b6 id e50e1468-b057-41b0-8cb7-7a99c6ad26b6   name "screen 01"  description "screen 01 description"
+HMSET screen:5ba6ba85-a808-4d8a-bec1-324f5874c026 id 5ba6ba85-a808-4d8a-bec1-324f5874c026  name "screen 02"  description "screen 02 description"
+
+
+zadd screen-widgets:e50e1468-b057-41b0-8cb7-7a99c6ad26b6  1395307181550  250ea950-b010-11e3-a66e-551bed25837a
+
+
 */
 
 
-
-
 var screens = [
-		{ id: "abc", name:"screen01", 	desc:"screen01 desc", widgets: ["2348hdjfhui434", "2348hdjfhui45"	] } ,
-		{ id: "abc2", name:"screen02", 	desc:"screen02 desc",  widgets: ["2348hdjfhui434"	]} 
+		{ id: "e50e1468-b057-41b0-8cb7-7a99c6ad26b6", name:"screen01", 	desc:"screen01 desc", widgets: ["2348hdjfhui434", "2348hdjfhui45"] } ,
+		{ id: "5ba6ba85-a808-4d8a-bec1-324f5874c026", name:"screen02", 	desc:"screen02 desc",  widgets: ["2348hdjfhui434"	]} 
 	];
 
+var TABLE_NAME = {
+	singular: "screen",
+	plural: "screens"
 
+}
+
+/*
 
 
 var Screen = Base.model("Screen", {
@@ -78,15 +100,33 @@ screen.save( function(errors, isSaved ){
 		}
 });
 
-
+*/
 
 var Screen = {
 
 	screens : screens,
-	all: function(){
-			return this.screens
-	},
-	errors: [],
+	all: function(callback){
+		var screenList = [];
+		redisClient.zrange(TABLE_NAME.plural, 0, -1, function(err, list){
+			if(err){
+				callback(err, screenList)
+				return;
+			}else{
+				async.each(list, function(screen_id, done){
+					redisClient.hgetall( TABLE_NAME.singular+":"+screen_id, function(err, screen){
+							screenList.push(screen);
+							done(err);
+					});
+
+				}, function(err){			    
+					callback(err, screenList);
+				});
+			}
+		});
+			
+	},	
+
+	errors: {},
 	validate: function(obj){
 		this.errors = [];
 		
@@ -125,9 +165,12 @@ var Screen = {
 
 	},
 
-	find: function(id){
-		console.log( "searching for ", id);
-		return _.where(this.all(), {id:id});
+	find: function(id, callback){
+		//Record exist
+		redisClient.hgetall(TABLE_NAME.singular +":"+id, function(err, res){
+			callback(err, res);
+		//	redisClient.end();
+		});
 	},
 
 	destroy: function(obj){

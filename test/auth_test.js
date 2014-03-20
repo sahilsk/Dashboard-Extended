@@ -49,7 +49,7 @@ describe('Authorization :', function () {
   it('Login with correct credentials', function (done) {
     var user = {
         username: 'sahilsk',
-        password: 'abc'
+        password: 'admin'
       };
     var agent = request.agent();
     agent.post(testUtil.siteRootUrl + '/auth').send(user).end(function (error, res) {
@@ -57,7 +57,7 @@ describe('Authorization :', function () {
         throw error;
       res.status.should.be.exactly(200);
       res.redirects.should.eql([testUtil.siteRootUrl +"/"] );
-      res.text.should.include('Welcome, ', user.username);
+      res.text.should.include('Welcome, ', user.username, "No welcome message");
       done();
     });
   });

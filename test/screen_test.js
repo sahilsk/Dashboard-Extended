@@ -65,7 +65,7 @@ describe('Screen :', function () {
         if (err)
           throw err;
         res.status.should.be.exactly(200);
-        res.text.should.include('Screen with name ' + screenRecord.screen_name + ' already exist');
+        res.text.should.include('Screen with name ' + screenRecord.screen_name + ' already exist', "Error message absent in dom");
         done();
       });
     });

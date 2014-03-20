@@ -17,7 +17,7 @@ exports.auth = function (req, res) {
 		var User = require('../models/account.js');
 		User.where_username(req.body.username, function(err, user){
 			if(err){
-			  util.log('Failed to retrieve user ', req.body.username, err);
+			  util.log( util.format( 'Failed to retrieve user %s:%s ', req.body.username, err ));
 			  req.session.messages = { errors: [ util.format( 'Failed to retrieve user. Error:%s', err) ] };
 			  res.redirect('/login');
 			  return;
@@ -38,7 +38,7 @@ exports.auth = function (req, res) {
 				  res.redirect('/');
 				  return;
 				} else {
-				  util.log('Invalid user ', req.body.username);
+				  util.log('Authentication Failed : Incorrect Password ', req.body.username);
 				  req.session.messages = { errors: ['Invalid credentials'] };
 				  res.redirect('/login');
 				  return;
@@ -49,10 +49,20 @@ exports.auth = function (req, res) {
   }
 };
 exports.logout = function (req, res) {
-  var User = require('../models/account').User;
-  var u = User.find(req.session.user);
-  req.session.user = null;
-  req.session.messages = 'You are log out successfully';
-  res.redirect('/login');
-  return;
+  var User = require('../models/account');
+  console.log( req.session.user);
+  User.find(req.session.user.id, function(err, user){
+
+  	if(err){
+  		console.log("Failed to logout user");
+		req.session.messages = "Failed to logout user. Error:  "+ user.username;
+		res.redirect('/login');  		
+  		return;
+  	}
+
+	req.session.user = null;
+	req.session.messages = "You are log out successfully. Don't forget to logoin again "+ user.username;
+	res.redirect('/login');
+	return;  	
+  });
 };

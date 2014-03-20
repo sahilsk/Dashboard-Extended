@@ -1,7 +1,7 @@
 /*
 REDIS DATABASE
 
-######### STORE UQNIQUE ID'S
+######### MAINTAIN USER LIST STORE UQNIQUE ID'S
 ZADD  users timestamp ID
 
 ######### STORE USERS
@@ -78,8 +78,8 @@ User =
 					
 					redisClient.multi()
 							.set("username:"+user.username, user.id) // Username index
-							.set("email:"+user.email, user.id)//  Email index
-							.zadd(TABLE_NAME.plural, +new Date, user.id) // unique user id's
+							.set("email:"+user.email, user.id)//  EMAIL index
+							.zadd(TABLE_NAME.plural, +new Date, user.id) // USER LIST WITH UNIQUE USER ID
 							.hmset( TABLE_NAME.singular+":"+user.id, user)
 							.exec( function(err, replies){
 								util.log("MULTI got " + replies.length + " replies");
@@ -93,7 +93,7 @@ User =
 								}
 
 								//redisClient.end();
-							});
+					});
 				}
 		})
 	},
@@ -103,6 +103,7 @@ User =
 				if(!pass){
 					util.log("Unable to update user. Validation failed");
 					util.log("Erros: %s", err);
+					callback()
 				}else{
 					//VALIDATION PASSED -> SAVE()
 					redisClient.hmset( TABLE_NAME.singular+":"+user.id, user, function(err,res){
@@ -113,14 +114,10 @@ User =
 	},
 
 	find : function(id, callback){
-		var iUser = null;
-	
-		var redisClient =  redis.createClient(CONFIG.port, CONFIG.host);		
 
 		//Record exist
 		redisClient.hgetall(TABLE_NAME.singular +":"+id, function(err, res){
-			iUser = res;
-			callback(err, iUser);
+			callback(err, res);
 		//	redisClient.end();
 		});
 	},
@@ -132,6 +129,7 @@ User =
 				redisClient.get("username:"+username, function(err, res){
 					if(!err){
 						//util.log("query executed successfullly.." +res);
+						util.log("user id: " +  res);
 						user_id = res;
 						redisClient.hgetall(TABLE_NAME.singular +":"+user_id, function(err, res){
 							//util.log("finding username ...");
