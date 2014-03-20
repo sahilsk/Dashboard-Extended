@@ -1,7 +1,28 @@
+/*
+REDIS DATABASE
+
+######### STORE UQNIQUE ID'S
+ZADD  users timestamp ID
+
+######### STORE USERS
+HMSET user:ID  username "xxx"  password "xxx" email "xxx"
+
+#########  MAINTAIN USERNAME INDEX
+
+SADD username:xxxx   ID
+
+#########  MAINTAIN EMAIL INDEX	
+
+SADD email:xxx  ID
+
+
+*/
+
+
 var util = require("util");
-var redis = require("redis");
+var redisClient = require("../db");
 var CONFIG = require("config");
-var Validator = require("/lib/validation.js");
+var Validator = require("../lib/validation.js");
 var uuid = require("node-uuid");
 
 var user  = [
@@ -10,16 +31,14 @@ var user  = [
 ];
 
 var TABLE_NAME = {
-	plural: "screens",
-	singular: "screen"
+	plural: "users",
+	singular: "user"
 }
 
-exports.User = function(){ return user;}
-
-exports.User =
+User =
 {
 	
-	properties = {
+	properties :{
 		username: {
 			type: "string",
 			validations: ["notEmpty"]
@@ -33,18 +52,15 @@ exports.User =
 			validations: ["notEmpty"]
 		},
 		method: function(){
-			is_unique_username : function(key, callback){
-				//TODO				
-			}
 		}
 
 	},
 	
 	validate : function(user, callback){
-			var validator = new Validator(properties);
-			validator.validate(user, function(err, pass){
-				callback( err, pass);
-			});
+				var validator = new Validator(properties);
+				validator.validate(user, function(err, pass){
+					callback( err, pass);
+				});
 	},
 
 	save : function(user , callback){
@@ -57,19 +73,27 @@ exports.User =
 					//VALIDATION PASSED -> SAVE()
 					if( !user.hasOwnProperty("id") )
 						user.id =  uuid.v1(); 
-					//ADD ZADD users timestamp id
-					var redisClient =  redis.createClient(CONFIG.port, CONFIG.hostname);		
-					redisClient.zadd( "users", +new Date, user.id, function(err, res){
-						if(!err){
-							redisClient.hmset( TABLE_NAME.singular+":"+user.id, user, function(err,success){
-								if(!err){
-									util.log("user saved successfully");
+	
+					//VERIFY USER HAS UNIQUE USER ID
+					
+					redisClient.multi()
+							.set("username:"+user.username, user.id) // Username index
+							.set("email:"+user.email, user.id)//  Email index
+							.zadd(TABLE_NAME.plural, +new Date, user.id) // unique user id's
+							.hmset( TABLE_NAME.singular+":"+user.id, user)
+							.exec( function(err, replies){
+								util.log("MULTI got " + replies.length + " replies");
+								replies.forEach(function (reply, index) {
+									util.log("Reply " + index + ": " + reply.toString());
+								});
+								if(err){
+									util.log("Failed to save user ");
 								}else{
-									util.log("Failed to save user");
+									util.log("user saved successfully");
 								}
-							}); 						
-						}					
-					});
+
+								//redisClient.end();
+							});
 				}
 		})
 	},
@@ -77,18 +101,12 @@ exports.User =
 	update: function( user, callback){
 			this.validate(user, function(err, pass){
 				if(!pass){
-					util.log("Unable to save. Validation failed");
+					util.log("Unable to update user. Validation failed");
 					util.log("Erros: %s", err);
 				}else{
 					//VALIDATION PASSED -> SAVE()
-					//ADD ZADD users timestamp id
-					var redisClient =  redis.createClient(CONFIG.port, CONFIG.hostname);		
-					redisClient.hmset( TABLE_NAME.singular+":"+user.id, user, function(err,success){
-						if(!err){
-							util.log("user saved successfully");
-						}else{
-							util.log("Failed to save user");
-						}
+					redisClient.hmset( TABLE_NAME.singular+":"+user.id, user, function(err,res){
+						callback(err, res);
 					}); 						
 				}
 		})
@@ -97,20 +115,93 @@ exports.User =
 	find : function(id, callback){
 		var iUser = null;
 	
-		var redisClient =  redis.createClient(CONFIG.port, CONFIG.hostname);		
+		var redisClient =  redis.createClient(CONFIG.port, CONFIG.host);		
 
 		//Record exist
 		redisClient.hgetall(TABLE_NAME.singular +":"+id, function(err, res){
 			iUser = res;
 			callback(err, iUser);
-			redisClient.end();
+		//	redisClient.end();
 		});
+	},
+
+	where_username : function(username, callback){
+			var user_id = null;
+			if( username !=null){
+				util.log("finding user " + username );
+				redisClient.get("username:"+username, function(err, res){
+					if(!err){
+						util.log("query executed successfullly.." +res);
+						user_id = res;
+						redisClient.hgetall(TABLE_NAME.singular +":"+user_id, function(err, res){
+							util.log("finding username ...");
+							callback(err, res);
+							//redisClient.end();
+							return;
+						})
+					}else{
+						callback(err, null);
+						return;
+					}
+				});
+			}else{
+				util.log("username was null");
+				callback("username can't be null", null);
+				return;
+			}
+	},
+
+	where: function( searchHash, callback){
+			var username = null;
+			var email = null;
+			var user = null;
+			var user_id = null;
+			if( searchHash.hasOwnProperty("username"))
+				 username = searhHash.username;
+			if( searchHash.hasOwnProperty("email"))
+				 email = searhHash.email;
+			
+			var redisClient =  redis.createClient(CONFIG.port, CONFIG.host);	
+
+			if( username !=null){
+				redisClinet.get("username:"+username, function(err, res){
+					if(!err){
+						user_id1 = res;
+					}
+				});
+			}
+			if( email != null){
+				redisClinet.get("email:"+email, function(err, res){
+					if(!err){
+						user_id2 = res;
+					}
+				});				
+
+			}
+
+			if( username && email)
+				if(user_id1 != user_id2){
+					callback(null, null);
+					return null
+				}
+			var user_id = user_id1 || user_id2
+			
+			redisClient.hgetall(TABLE_NAME.singular +":"+user_id, function(err, res){
+				callback(err, res);
+				redisClient.end();
+				
+			})
+
+	
 	},
 
 	destroy : function(id, callback){
 		redisClient.del(TABLE_NAME.singular + ":"+id, function(err, res){
 			callback(err,res);
-		});	
+		});
 	}
 	
 }
+
+
+module.exports = User;

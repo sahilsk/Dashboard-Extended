@@ -23,13 +23,13 @@ exports.auth = function (req, res) {
 			  return;
 			}else{
 				if (!user) {
-				  util.log('Invalid username ', req.body.username);
+				  console.log('Invalid username ', req.body.username);
 				  req.session.messages = { errors: ['Invalid username'] };
 				  res.redirect('/login');
 				  return;
 				}
 				if (user.password === req.body.password) {
-				  util.log('User Authenticated');
+				  console.log('User Authenticated');
 				  req.session.messages = { success: ['Welcome, ' + user.username] };
 				  req.session.user = {
 					username: user.username,
@@ -38,7 +38,7 @@ exports.auth = function (req, res) {
 				  res.redirect('/');
 				  return;
 				} else {
-				  util.log('Invalid user ', req.body.username);
+				  console.log('Invalid user ', req.body.username);
 				  req.session.messages = { errors: ['Invalid credentials'] };
 				  res.redirect('/login');
 				  return;

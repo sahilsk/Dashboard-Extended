@@ -28,8 +28,8 @@ Validator.prototype.validate = function(obj, callback){
 				switch(validation){
 
 					case "notEmpty":
-						if( ( obj.hasOwnProperty(key) ){
-							if( obj[key] === null)  || obj[key].length === 0 )
+						if( obj.hasOwnProperty(key) ){
+							if( obj[key] === null  || obj[key].length === 0 )
 								errors[key].push( key + " should not be empty" );
 						}else
 							errors[key].push( key + " should not be empty" );
@@ -58,10 +58,10 @@ Validator.prototype.validate = function(obj, callback){
 						}
 						break;
 					case "integer":
-						if(typeof(obj[key]) !== "number")
-							errors[key].push( key + " is not a number" );
-						}
-						break;
+								if(typeof(obj[key]) !== "number"){
+									errors[key].push( key + " is not a number" );
+								}
+								break;
 
 					default:
 						console.log("Un-supported type");
@@ -75,7 +75,7 @@ Validator.prototype.validate = function(obj, callback){
 
 		}// END 'for' LOOP
 		
-		callback(errors,  
+		callback(errors,  isValidated);
 };
 
 
