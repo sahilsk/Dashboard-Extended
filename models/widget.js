@@ -1,6 +1,29 @@
 var _ = require("underscore");
 var uuid = require('node-uuid');
 
+
+/*
+
+###########  Add New Screen
+zadd widgets timestamp isSaved// SCREEN LIST
+hmset widget:id  key  val   key  val
+
+
+###########  Retrive Widget
+hgetall "widget:id" >> { k:v, k:v,[,]}
+
+
+DATABASE
+========================
+zadd widgets 1395306635123 250ea950-b010-11e3-a66e-551bed25837a
+
+
+HMSET widget:250ea950-b010-11e3-a66e-551bed25837a id  "250ea950-b010-11e3-a66e-551bed25837a"  	url  "http://50.18.225.222:4273/containers/json?all=1" data_template ""  	pre_data  "" post_data ""  validation_schema  ""  	repr_scheme  "Table"  	repr_setting "{ 	columns: [ 	 			 { name: 'Id'		, type: 'string'}, {  name: 'Image'	, type:'string'	},		 	 			 {  name: 'Command'	, type:'string'	},		 			{  name: 'Created'	, type:'number'	},	 			 {  name:'Status'	, type:'string'	},		 			 {  name:'Ports		, type:'string'	},		 			 {  name:'SizeRw'	, type:'number'	},	 			 {  name:'SizeRootFs', type:'umber'	},		 			 {  name:'Names'		, type:'string'	}		 		],	 		showRowNumber: true	 	}  "  	events   "{}"  	setting  "{}"
+
+
+*/
+
+
 var widgets = [
 	{
 		id: "2348hdjfhui434",

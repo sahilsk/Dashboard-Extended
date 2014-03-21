@@ -167,8 +167,24 @@ var Screen = {
 
 	find: function(id, callback){
 		//Record exist
-		redisClient.hgetall(TABLE_NAME.singular +":"+id, function(err, res){
-			callback(err, res);
+		redisClient.hgetall(TABLE_NAME.singular +":"+id, function(err, screen){
+			//ATTACHING WIDGETS
+
+			if( err){
+				callback(err, null);
+				return;
+			}
+
+			redisClient.zrange( "screen-widgets:"+id, 0, -1 , function(err, widgets){
+				if(err)
+					callback(err, null);
+				else{
+					screen.widgets = widgets;
+					callback(null, screen);
+				}
+				return;
+			}  )
+			
 		//	redisClient.end();
 		});
 	},
