@@ -15,6 +15,10 @@ SADD username:xxxx   ID
 
 SADD email:xxx  ID
 
+#########  DATABASE
+
+HMSET user:
+
 
 */
 

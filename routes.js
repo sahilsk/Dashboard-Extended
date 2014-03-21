@@ -20,8 +20,8 @@ module.exports = function(app){
 //SCREENS: CREATE, EDIT, DELETE, UPDATE
 	app.get('/screens/new', [authMWare.isLoggedIn, screenMWare.all], screen.new);
 	app.post('/screens/create', [authMWare.isLoggedIn,screenMWare.all], screen.create);
-	app.get('/screens/:id', [authMWare.isLoggedIn,screenMWare.fetchScreen, screenMWare.all ], screen.show);
-	app.del('/screens/:id', [authMWare.isLoggedIn,screenMWare.fetchScreen, screenMWare.all ], screen.delete);
+	app.get('/screens/:id', [authMWare.isLoggedIn,screenMWare.all, screenMWare.fetchScreen ], screen.show);
+	app.del('/screens/:id', [authMWare.isLoggedIn,screenMWare.all, screenMWare.fetchScreen ], screen.delete);
 
 
 //WIDGETS: CREATE, EDIT, DELETE, UPDATE

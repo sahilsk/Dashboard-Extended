@@ -29,7 +29,7 @@ HMSET screen:e50e1468-b057-41b0-8cb7-7a99c6ad26b6 id e50e1468-b057-41b0-8cb7-7a9
 HMSET screen:5ba6ba85-a808-4d8a-bec1-324f5874c026 id 5ba6ba85-a808-4d8a-bec1-324f5874c026  name "screen 02"  description "screen 02 description"
 
 
-zadd screen-widgets:e50e1468-b057-41b0-8cb7-7a99c6ad26b6  1395307181550  250ea950-b010-11e3-a66e-551bed25837a
+zadd screen_widgets:e50e1468-b057-41b0-8cb7-7a99c6ad26b6  1395307181550  250ea950-b010-11e3-a66e-551bed25837a
 
 
 */
@@ -42,7 +42,8 @@ var screens = [
 
 var TABLE_NAME = {
 	singular: "screen",
-	plural: "screens"
+	plural: "screens",
+	hasMany : "widgets"
 
 }
 
@@ -175,7 +176,7 @@ var Screen = {
 				return;
 			}
 
-			redisClient.zrange( "screen-widgets:"+id, 0, -1 , function(err, widgets){
+			redisClient.zrange(  TABLE_NAME.singular + "_widgets:" + id, 0, -1 , function(err, widgets){
 				if(err)
 					callback(err, null);
 				else{
@@ -188,6 +189,20 @@ var Screen = {
 		//	redisClient.end();
 		});
 	},
+
+	fetchWidgets : function(screen_id, callback){
+
+			redisClient.zrange(  TABLE_NAME.singular + "_widgets:" + screen_id, 0, -1 , function(err, idlist){
+				if(err)
+					callback(err, null);
+				else{
+					callback(null, idlist);
+				}
+				return;
+			})
+
+	},
+
 
 	destroy: function(obj){
 		console.log("Deleting ", obj.name);

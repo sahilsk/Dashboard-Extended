@@ -5,7 +5,7 @@ exports.new = function (req, res) {
   var data = {
       username: req.session.user.username,
       title: 'Widget : New',
-      screens: require('../models/screen.js').all(),
+      screens: req.session.screens,
       widgets: require('../models/widget.js').all()
     };
   res.render('widgets/new', data);

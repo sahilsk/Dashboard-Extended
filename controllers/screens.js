@@ -1,3 +1,6 @@
+var _ = require("underscore");
+
+
 exports.show = function (req, res) {
   var async = require('async');
   if (!req.session.screen) {
@@ -9,31 +12,37 @@ exports.show = function (req, res) {
   var fs = require('fs');
   var JSONParse = require('json-literal-parse');
   var screen = req.session.screen;
-  var widgets = [];
-  var arr_widHTML = [];
+  var arr_widgetHTML = [];
+
   var widgetUtil = require('../lib/widget_util.js');
-  async.each(screen.widgets, function (w, cb) {
-    widgetUtil.render_widget(w, function (w_html) {
-      arr_widHTML.push(w_html);
+
+  async.each(screen.widgets, function (widget, cb) {
+  	console.log(widget);
+    widgetUtil.render_widget(widget, function (w_html) {
+      arr_widgetHTML.push(w_html);
       cb(null);
     });
   }, function (err) {
-    console.log(arr_widHTML[0]);
+    console.log(arr_widgetHTML[0]);
+
     var data = {
         username: req.session.user.username,
         title: 'Screen : ',
-        widgets: arr_widHTML,
-        screens: require('../models/screen.js').all(),
+        widgets: arr_widgetHTML,
+        screens: req.session.screens,
         screen: req.session.screen
       };
+
     res.render('screens/show', data);
   });
+
+
 };
 exports.new = function (req, res) {
   var data = {
       username: req.session.user.username,
       title: 'Screen : Create New',
-      screens: require('../models/screen.js').all()
+      screens: req.session.screens
     };
   res.render('screens/new', data);
 };
