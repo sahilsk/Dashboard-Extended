@@ -20,9 +20,7 @@ app.use(express.session());
 app.use(function (req, res, next) {
   res.locals.messages = req.session.messages;
   req.session.messages = '';
-  next();   
-
-
+  next();
 });
 app.use(app.router);
 
