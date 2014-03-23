@@ -49,8 +49,8 @@ exports.auth = function (req, res) {
   }
 };
 exports.logout = function (req, res) {
-	var user = req.session.user;
-	console.log( "logging out '%s'", user.username);
+  var user = req.session.user;
+  console.log( "logging out '%s'", user.username);
 
 	req.session.user = null;
 	req.session.messages = "You are log out successfully. Don't forget to login again "+ user.username;

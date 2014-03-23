@@ -26,7 +26,6 @@ app.use(app.router);
 
 
 // ----------------------ERROR HANDLING
-/*
 app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
@@ -48,7 +47,6 @@ function errorHandler(err, req, res, next) {
   res.status(500);
   res.render('error', { error: err });
 }
-*/
 // ------------------- END ERROR HANDLING
 
 

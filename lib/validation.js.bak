@@ -53,7 +53,7 @@ Validator.prototype.validate = function(obj, callback){
 						}
 						break;
 					case "string":
-						if(typeof(obj[key]) !== "string")
+						if(typeof(obj[key]) !== "string"){
 							errors[key].push( key + " is not a string" );
 						}
 						break;
@@ -69,13 +69,10 @@ Validator.prototype.validate = function(obj, callback){
 				
 				}
 			}
-				
-			if( errors[key].length >  0)
-				isValidated = false;
 
 		}// END 'for' LOOP
 		
-		callback(errors,  isValidated);
+		callback(errors);
 };
 
 

@@ -253,7 +253,7 @@ var Screen = {
 				replies.forEach(function (reply, index) {
 					util.log("Reply " + index + ": " + reply.toString());
 				});
-				callback(null);
+				callback(err);
 				//redisClient.end();
 			});
 

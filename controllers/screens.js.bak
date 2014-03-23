@@ -80,12 +80,6 @@ exports.create = function (req, res) {
 	});
 
 };
-
-exports.removeWidget = function(req, res){
-	
-
-};
-
 exports.delete = function (req, res) {
   if (!req.session.screen) {
     req.session.messages = { errors: ['screen not found'] };

@@ -5,11 +5,15 @@ exports.new = function (req, res) {
   var data = {
       username: req.session.user.username,
       title: 'Widget : New',
-      screens: req.session.screens    };
+      screens: req.session.screens,
+      widgets: require('../models/widget.js').all()
+    };
   res.render('widgets/new', data);
 };
 exports.create = function (req, res) {
-
+  //Deny direct post request
+  //Validate Input params
+  //Create new screen
   res.send('W.I.P');
 };
 exports.load_widget = function (id, params) {
