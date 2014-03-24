@@ -10,6 +10,11 @@ h1 Create New Widget
 
 form(method='POST', action='/widgets/create', class="form-horizontal", role="form")
 	.form-group
+		label(for="name", class="col-sm-2 control-label") URL
+		.col-sm-10
+			input( type="text", class="form-control",name="name", id="name", placeholder="eg. Docker Images 01")
+
+	.form-group
 		label(for="fetch_url", class="col-sm-2 control-label") URL
 		.col-sm-10
 			input( type="url", class="form-control",name="fetch_url", id="fetch_url", placeholder="eg. http://abc.com/users.json?like=sk")
@@ -40,26 +45,33 @@ form(method='POST', action='/widgets/create', class="form-horizontal", role="for
 			select( class="form-control" rows="3", id="rep_scheme" , name="rep_scheme")
 				option Table
 
+
 	.form-group
+		hr
 		label(for="tbl_set", class="col-sm-2 control-label") Table Setting
 		.col-sm-10
-			input( type="input", class="form-control",name="fetch_url", id="fetch_url", placeholder="col01; col02; col03")
+			input( type="input", class="form-control", name="table_cols", id="table_cols", placeholder="col01; col02; col03")
+		
+		label(for="tbl_set", class="col-sm-2 control-label")  Hide Row Number
+		.col-sm-10
+			input( type="checkbox", class="form-control", name="hideRowNumber", id="hideRowNumber")
+
 
 	.form-group
 		label(for="tbl_event", class="col-sm-2 control-label") Bind Event
 		.col-sm-10
-			input( type="input", class="form-control",name="fetch_url", id="fetch_url", placeholder="onClick col3")
+			input( type="input", class="form-control",name="", id="", placeholder="onClick col3")
 
 		label(for="tbl_event", class="col-sm-2 control-label") Action Event
 		.col-sm-10
-			select( class="form-control" rows="3", id="rep_scheme" , name="rep_scheme")
+			select( class="form-control" rows="3", id="" , name="")
 				option Launch Widget
 				option Run Script
 
 	.form-group
 		label(for="update_freq", class="col-sm-2 control-label") Update Frequency Scheme
 		.col-sm-10
-			input( type="input", class="form-control",name="update_freq", id="update_freq", placeholder="3000 for 3 seconds")
+			input( type="input", class="form-control",name="update_freq", id="update_freq", placeholder="eg. 3000 for 3 seconds", value="3000")
 
 	.form-group
 		div(class="col-sm-offset-2 col-sm-10")

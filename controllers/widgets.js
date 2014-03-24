@@ -9,8 +9,65 @@ exports.new = function (req, res) {
   res.render('widgets/new', data);
 };
 exports.create = function (req, res) {
+	var formData = req.body;
 
-  res.send('W.I.P');
+	var t_widget = {
+		name: formData.name,
+	 	url: formData.fetch_url,
+	 	data_template: formData.data_template,
+	 	pre_data: formData.pre_data,
+	 	post_data: formData.post_data,
+	 	validation_schema: formData.data_schema,
+	 	repr_scheme:  formData.rep_scheme,
+	 	refreshInterval: parseInt(formData.update_freq)
+	 }
+	
+	switch( formData.rep_scheme){
+		case "Table":
+			t_widget.repr_setting = {
+				columns: [],
+				showRowNumber: !parseInt(formData.hideRowNumber)
+			}
+
+			formData.table_cols.split(";").forEach( function(colStr){
+				var col = colStr.split(":")
+				t_widget.repr_setting.columns.push( 
+					{	name: col[0].trim(),  type: col[1].trim()	}
+				);		
+
+			})
+
+			break;
+		default:
+			console.log("Unsupported representational scheme");
+			req.session.messages = { errors: "Unsupported representational scheme"}
+			res.redirect("/widgets/new")
+	}
+
+	console.log( "Widget To Save: %j", t_widget);
+	var Widget = require('../models/widget');
+
+
+
+	Widget.save( t_widget, function(err, screen){
+		if(!err){
+			console.log('Widget created successfully');
+			req.session.messages = {
+			  success: ['Widget(' + t_widget.name + ') created successfully'],
+			  errors: []
+			};
+			res.redirect('/');
+			return;
+		}else{
+			console.log('Failed to create screen: ',err);
+			req.session.messages = { validationErrors: err };
+			res.redirect('widgets/new');
+			return;
+		}
+	});
+
+
+  
 };
 exports.load_widget = function (id, params) {
 };

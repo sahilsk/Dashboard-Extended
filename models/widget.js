@@ -4,6 +4,10 @@ var uuid = require('node-uuid');
 var redisClient = require("../db");
 var CONFIG = require("config");
 var async = require("async");
+var util = require("util");	
+var Validator = require("../lib/validation.js");
+
+
 
 
 /*
@@ -30,8 +34,12 @@ DELETE
 ======
 Confirm widget is not used elsewhere?
 	screen_widgets:* should not container widget_id
-	zrem widget widget_id
+	zrem widgets widget_id
 	del widget:id
+
+RETRIEVE
+========
+zadd 
 
 
 */
@@ -54,7 +62,7 @@ var widgets = [
 	 	repr_scheme:"Table",
 	 	repr_setting:{
 	 		columns: [
-	 			 { name: 'Id'		, type: 'string'},
+	 			 { name: 'id'		, type: 'string'},
 	 			 {  name: 'Image'	, type:'string'	},		
 	 			 {  name: 'Command'	, type:'string'	},	
 	 			 {  name: 'Created'	, type:'number'	},
@@ -67,7 +75,7 @@ var widgets = [
 	 		showRowNumber: true
 	 	},
 	 	events:{},
-	 	setting:{}
+	 	refreshInterval: 2300
 	} ,
 	{
 		id: "2348hdjfhui45",
@@ -138,11 +146,117 @@ var Widget = {
 	},
 	*/
 
+	properties :{
+		name: {
+			type: "string",
+			validations: ["notEmpty"]
+		},		
+		url: {
+			type: "string",
+			validations: ["notEmpty"]
+		},
+		repr_scheme: {
+			type: "string",
+			validations: ["notEmpty"]
+		},
+		repr_setting:{
+			type:"object",
+			validations: ["notEmpty"]
+		},
+		refreshInterval:{
+			type:"number",
+			validations:["notEmpty"]
+		}
+	},
+	all: function(callback){
+		var widgetList = [];
+		redisClient.zrange(TABLE_NAME.plural, 0, -1, function(err, list){
+			if(err){
+				callback(err, widgetList)
+				return;
+			}else{
+				async.each(list, function(wid, done){
+					redisClient.hgetall( TABLE_NAME.singular+":"+wid, function(err, widget){
+							widgetList.push(widget);
+							done(err);
+					});
+
+				}, function(err){	    
+					callback(err, widgetList);
+				});
+			}l
+		});
+			
+	},	
+	validate : function(record, callback){
+				var validator = new Validator(this.properties);
+				validator.validate(record, function(err, pass){
+					callback( err, pass);
+				});
+	},
+	save :function(widget, callback){
+			//ONLY NEW RECORD
+			if( !widget.hasOwnProperty("id") ){
+				widget.id =  uuid.v1();
+			}else{
+				util.log("Not a new record. Saving failed");
+				calback("Not a new record", null);
+				return;
+			}	
+
+		
+			this.validate(widget, function(err, pass){
+				if(!pass){
+					util.log("Unable to save. Validation failed");
+					console.log("Validation Errors: ", err);
+					callback(err, null);
+					return;
+				}else{
+					//VALIDATION PASSED
+					var timestamp = +new Date;
+					var redisTransaction = redisClient.multi();
+						redisTransaction
+							.zadd(TABLE_NAME.plural, timestamp, widget.id) // SCREENS-ID SET 
+							.hmset( TABLE_NAME.singular+":"+widget.id, widget)
+							.exec( function(err, replies){
+								util.log("MULTI got " + replies.length + " replies");
+								replies.forEach(function (reply, index) {
+									util.log("Reply " + index + ": " + reply.toString());
+								});
+								if(err){
+									util.log("Failed to save record  "+err);
+									callback("Failed to save record" + err);
+								}else{
+									util.log("widget saved successfully");
+									callback(null, widget);
+								}
+								//redisClient.end();
+						});
+
+
+				}
+			})
+	},	
+
 	find: function(id, callback){
 
 		console.log( TABLE_NAME.singular + ":" + id );
 		redisClient.hgetall( TABLE_NAME.singular + ":" + id, function(err, res){ callback(err, res) } );
-	}
+	},
+	destroy: function(obj, callback){
+		redisClient.multi()
+			.del( TABLE_NAME.singular +":"+obj.id)
+			.zrem( TABLE_NAME.plural , obj.id)
+			.exec( function(err, replies){
+				util.log("MULTI got " + replies.length + " replies");
+				replies.forEach(function (reply, index) {
+					util.log("Reply " + index + ": " + reply.toString());
+				});
+				callback(null);
+				//redisClient.end();
+			});
+
+	}	
 
 }
 
