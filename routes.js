@@ -27,6 +27,6 @@ module.exports = function(app){
 //WIDGETS: CREATE, EDIT, DELETE, UPDATE
 	app.get('/widgets/new', [authMWare.isLoggedIn, screenMWare.all], widget.new);
 	app.post('/widgets/create', [authMWare.isLoggedIn, screenMWare.all], widget.create);
-	app.get('/widgets/:id', [authMWare.isLoggedIn, screenMWare.fetchScreen, screenMWare.all ], widget.show);
+	app.get('/widgets/:id', [authMWare.isLoggedIn, widgetMWare.fetchWidget, screenMWare.all ], widget.show);
 } 
 
