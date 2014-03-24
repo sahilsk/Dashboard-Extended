@@ -57,19 +57,19 @@ exports.create = function (req, res) {
   var t_screen = {
       name: req.body.screen_name,
       description: req.body.screen_desc,
-	  widgets : []
+	    widgets : []
     };
   var Screen = require('../models/screen');
  
   //Create new screen
-	Screen.save( t_screen, function(err){
+	Screen.save( t_screen, function(err, screen){
 		if(!err){
 			console.log('Screen created successfully');
 			req.session.messages = {
 			  success: ['Screen(' + t_screen.name + ') created successfully'],
 			  errors: []
 			};
-			res.redirect('/');
+			res.redirect('/screens/'+screen.id);
 			return;
 		}else{
 			console.log('Failed to create screen: ',err);
@@ -78,8 +78,13 @@ exports.create = function (req, res) {
 			return;
 		}
 	});
-
 };
+
+exports.addWidget = function(req, res){
+
+
+}
+
 
 exports.removeWidget = function(req, res){
 	
@@ -92,18 +97,17 @@ exports.delete = function (req, res) {
   } else {
     var Screen = require('../models/screen');
     Screen.destroy(req.session.screen, function(err){
-		if(err){
-			util.log("Failed to delete screen "+err);
-			req.session.messages = { errors: ['Failed to delete screen. ' + err] };
-		}else{
-			util.log("Screen deleted successfully");
-			req.session.messages = { success: ['Screen ' + req.session.screen.name + ' deleted successfully'] };
-			req.session.screen = null;
-		}
-		  res.redirect('/');
-		  return;
-	});
-
+  		if(err){
+  			util.log("Failed to delete screen "+err);
+  			req.session.messages = { errors: ['Failed to delete screen. ' + err] };
+  		}else{
+  			util.log("Screen deleted successfully");
+  			req.session.messages = { success: ['Screen ' + req.session.screen.name + ' deleted successfully'] };
+  			req.session.screen = null;
+  		}
+  		  res.redirect('/');
+  		  return;
+	  });
   }
 
 };

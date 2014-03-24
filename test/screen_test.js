@@ -3,6 +3,8 @@ var request = require('superagent');
 var CONFIG = require('config');
 var should = require('should');
 var testUtil = require('./shared/test_util.js');
+var screenFixture = require("./fixture/screen_fixture.js");
+
 describe('Screen :', function () {
   var agent = request.agent();
   var screenRecord = {
@@ -60,89 +62,77 @@ describe('Screen :', function () {
         done();
       });
     });
-    it('should not create duplicate screen', function (done) {
-      agent.post(testUtil.siteRootUrl + '/screens/create').send(screenRecord).end(function (err, res) {
-        if (err)
-          throw err;
-        res.status.should.be.exactly(200);
-        res.text.should.include('Screen with name ' + screenRecord.screen_name + ' already exist', "Error message absent in dom");
-        done();
-      });
-    });
-//TODO : Remove hardocded screen id
-    it('should be able to delete created screen', function(done){
-      agent.del(testUtil.siteRootUrl + '/screens/abc2').end(function (err, res) {
-        if (err)
-          throw err;
-        res.status.should.be.exactly(200);
-        res.redirects.should.eql([testUtil.siteRootUrl + '/'], "Should redirect to '/' ");
-        done();
+ 
+    describe("Screen Page: " , function(){
+      var screen = null;
+      before( function(done){
+           screenFixture.createScreen( function(scrn){
+              screen = scrn; 
+              console.log("New screen created: ", screen);
+              done(null);
+            });
+      })
+
+      it('Should redirect if invalid screen', function (done) {
+        agent.get(testUtil.siteRootUrl + '/screens/' + 'invalidscreen').end(function (err, res) {
+          if (err)
+            throw err;
+          res.redirects.should.eql([testUtil.siteRootUrl + '/'], "Should redirect to '/' ");
+          res.text.should.include('screen not found', "Invalid screen url fetched");
+          done();
+        });
       });
 
-    });
+      it("Should access valid screen page", function(done){
+        agent.get(testUtil.siteRootUrl + '/screens/' + screen.id).end(function (err, res) {
+          if (err)
+            throw err;
+          res.status.should.be.exactly(200);
+          done();
+        });          
+      })
+      it('Should have delete screen button', function (done) {
+        agent.get(testUtil.siteRootUrl + '/screens/'+screen.id).end(function (err, res) {
+          if (err)
+            throw err;
+          res.status.should.be.exactly(200);
+          res.text.toLowerCase().should.include("delete screen", "Button('Delete Screen') not found");
+          done();
+        });
+      });
+      it('Should show add widget button', function () {
+        agent.get(testUtil.siteRootUrl + '/screens/'+screen.id).end(function (err, res) {
+          if (err)
+            throw err;
+          res.status.should.be.exactly(200);
+          res.text.toLowerCase().should.include("add new widget", "Button('add new widget') not found");
+        });
+      });  
 
-    it('should be able to create after deletion of duplicate record', function (done) {
-      agent.post(testUtil.siteRootUrl + '/screens/create').send(screenRecord).end(function (err, res) {
-        if (err)
-          throw err;
-        res.status.should.be.exactly(200, "Should have good status code");
-        res.text.should.include( screenRecord.screen_name, "Screen not created");
-        done();
-      });
-    });
 
-    it('should be able to open screen', function (done) {
-      agent.get(testUtil.siteRootUrl + '/screens/' + screenRecord.screen_name).end(function (err, res) {
-        if (err)
-          throw err;
-        res.status.should.be.exactly(200);
-        done();
+      it("should render widget", function(done){
+        agent.get(testUtil.siteRootUrl + '/screens/'+screen.id).end(function (err, res) {
+          if (err)
+            throw err;
+          res.status.should.be.exactly(200);
+          res.text.toLowerCase().should.include("widget_", "Widgets not found");
+          done();
+        });
+      })
+
+      it("should be able to delete screen", function(done){
+        agent.del(testUtil.siteRootUrl + '/screens/'+screen.id).end(function (err, res) {
+          if (err)
+            throw err;
+          res.status.should.be.exactly(200);
+          res.redirects.should.eql([testUtil.siteRootUrl + '/'], "Should redirect to '/' ");
+          done();
+        });
       });
-    });
-    it('redirect to / if screen doesn\'t exist', function (done) {
-      agent.get(testUtil.siteRootUrl + '/screens/' + 'invalidscreen').end(function (err, res) {
-        if (err)
-          throw err;
-        res.redirects.should.eql([testUtil.siteRootUrl + '/'], "Should redirect to '/' ");
-        res.text.should.include('screen not found', "Invalid screen url fetched");
-        done();
-      });
+
     });
   });
-  describe('Screen page', function () {
-    it('Should show add widget button', function () {
-      agent.get(testUtil.siteRootUrl + '/screens/abc').end(function (err, res) {
-        if (err)
-          throw err;
-        res.status.should.be.exactly(200);
-        res.text.toLowerCase().should.include("add new widget", "Button('add new widget') not found");
-      });
-    });
-//TODO : Remove hardocded screen id    
-    it('Should show delete screen button', function (done) {
-      agent.get(testUtil.siteRootUrl + '/screens/abc').end(function (err, res) {
-        if (err)
-          throw err;
-        res.status.should.be.exactly(200);
-        res.text.toLowerCase().should.include("delete screen", "Button('delete screen') not found");
-        done();
-      });
-    });
 
-  });
-
-  it("should render widget", function(done){
-    agent.get(testUtil.siteRootUrl + '/screens/abc').end(function (err, res) {
-      if (err)
-        throw err;
-      res.status.should.be.exactly(200);
-      res.text.toLowerCase().should.include("widget_", "Widgets not found");
-      done();
-    });
-
-
-
-  })
 
 
 

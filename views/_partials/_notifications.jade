@@ -1,4 +1,4 @@
--if(messages.hasOwnProperty("errors") && messages.errors.length > 0)
+-if( messages != undefined && messages.hasOwnProperty("errors") && messages.errors.length > 0)
 	-messages.errors.forEach( function(errMsg){
 		div(class="alert alert-danger alert-dismissable")
 			button(type="button" class="close" data-dismiss="alert" aria-hidden="true")
@@ -7,7 +7,7 @@
 	-})
 
 
--if( messages.hasOwnProperty("validationErrors") && typeof (messages.validationErrors) == "object")
+-if( messages !== undefined && messages.hasOwnProperty("validationErrors") && typeof (messages.validationErrors) == "object")
 	-for(key in messages.validationErrors)
 		-messages.validationErrors[key].forEach( function(msg){
 			div(class="alert alert-danger alert-dismissable")
@@ -20,7 +20,7 @@
 
 
 
--if(messages.hasOwnProperty("success") && messages.success.length > 0)
+-if(messages !== undefined &&  messages.hasOwnProperty("success") && messages.success.length > 0)
 	-messages.success.forEach( function(sucMsg){
 		div(class="alert alert-success alert-dismissable")
 			button(type="button" class="close" data-dismiss="alert" aria-hidden="true")

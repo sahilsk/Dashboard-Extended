@@ -8,7 +8,7 @@
     "start": "NODE_ENV=development node server.js",
     "watch": "NODE_ENV=development nodemon server.js",
     "test": "mocha test",
-    "testwatch": "mocha test -G -w",
+    "testwatch": "mocha test -G -w -t 5000",
     "browserify": "browserify public/javascripts/client/index.js -o public/javascripts/bundle.js"
   },
   "repository": {

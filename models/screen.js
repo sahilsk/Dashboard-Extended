@@ -154,7 +154,7 @@ var Screen = {
 				screen.id =  uuid.v1();
 			}else{
 				util.log("Not a new record. Saving failed");
-				calback("Not a new record");
+				calback("Not a new record", null);
 				return;
 			}	
 
@@ -163,7 +163,7 @@ var Screen = {
 				if(!pass){
 					util.log("Unable to save. Validation failed");
 					console.log("Validation Errors: ", err);
-					callback(err);
+					callback(err, null);
 					return;
 				}else{
 					//VALIDATION PASSED
@@ -192,8 +192,8 @@ var Screen = {
 										util.log("Failed to save record  "+err);
 										callback("Failed to save record" + err);
 									}else{
-										util.log("user saved successfully");
-										callback(null);
+										util.log("screen saved successfully");
+										callback(null, screen);
 									}
 									//redisClient.end();
 						});
@@ -215,15 +215,20 @@ var Screen = {
 				return;
 			}
 
-			redisClient.zrange(  TABLE_NAME.singular + "_widgets:" + id, 0, -1 , function(err, widgets){
-				if(err)
-					callback(err, null);
-				else{
-					screen.widgets = widgets;
-					callback(null, screen);
-				}
+			if( screen === null){
+				callback(null, null);
 				return;
-			}  )
+			}else {
+				redisClient.zrange(  TABLE_NAME.singular + "_widgets:" + id, 0, -1 , function(err, widgets){
+					if(err)
+						callback(err, screen);
+					else{
+						screen.widgets = widgets;
+						callback(null, screen);
+					}
+					return;
+				})
+			}
 			
 		//	redisClient.end();
 		});
