@@ -168,7 +168,7 @@ var Widget = {
 			validations:["notEmpty"]
 		}
 	},
-	all: function(callback){
+	all: function( callback){
 		var widgetList = [];
 		redisClient.zrange(TABLE_NAME.plural, 0, -1, function(err, list){
 			if(err){

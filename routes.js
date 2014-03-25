@@ -12,7 +12,7 @@ var widgetMWare = require("./lib/widget_middleware");
 
 module.exports = function(app){
 
-	app.get('/', [authMWare.isLoggedIn, screenMWare.all ],  welcome.index);
+	app.get('/', [authMWare.isLoggedIn, widgetMWare.all, screenMWare.all ],  welcome.index);
 
 //AUTHORIZATION
 	app.get("/login", session.index);
@@ -20,15 +20,15 @@ module.exports = function(app){
 	app.get("/logout", authMWare.isLoggedIn, session.logout);
 
 //SCREENS: CREATE, EDIT, DELETE, UPDATE
-	app.get('/screens/new', [authMWare.isLoggedIn, screenMWare.all], screen.new);
-	app.post('/screens/create', [authMWare.isLoggedIn,screenMWare.all], screen.create);
-	app.get('/screens/:id', [authMWare.isLoggedIn,screenMWare.all, screenMWare.fetchScreen ], screen.show);
-	app.del('/screens/:id', [authMWare.isLoggedIn], screen.delete);
+	app.get('/screens/new', [authMWare.isLoggedIn,widgetMWare.all, screenMWare.all], screen.new);
+	app.post('/screens/create', [authMWare.isLoggedIn, widgetMWare.all, screenMWare.all], screen.create);
+	app.get('/screens/:id', [authMWare.isLoggedIn,screenMWare.all,widgetMWare.all, screenMWare.fetchScreen ], screen.show);
+	app.del('/screens/:id', [authMWare.isLoggedIn, widgetMWare.all], screen.delete);
 
 
 //WIDGETS: CREATE, EDIT, DELETE, UPDATE
-	app.get('/widgets/new', [authMWare.isLoggedIn, screenMWare.all], widget.new);
-	app.post('/widgets/create', [authMWare.isLoggedIn, screenMWare.all], widget.create);
-	app.get('/widgets/:id', [authMWare.isLoggedIn, widgetMWare.fetchWidget, screenMWare.all ], widget.show);
+	app.get('/widgets/new', [authMWare.isLoggedIn, widgetMWare.all, screenMWare.all], widget.new);
+	app.post('/widgets/create', [authMWare.isLoggedIn, widgetMWare.all, screenMWare.all], widget.create);
+	app.get('/widgets/:id', [authMWare.isLoggedIn, widgetMWare.fetchWidget, widgetMWare.all, screenMWare.all ], widget.show);
 } 
 

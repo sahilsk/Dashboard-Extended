@@ -6,6 +6,7 @@ exports.index = function (req, res) {
   res.render('sessions/welcome', {
         title: 'Dashboard ',
         username: user.username,
-        screens: req.session.screens
+        screens: req.session.screens,
+        widgets: req.session.widgets
   })
 };

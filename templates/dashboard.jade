@@ -70,8 +70,10 @@ head
  
 
           ul.nav.nav-sidebar
-            li
-              a(href='') Nav item
+            -widgets.forEach(function(w){
+              li
+                a(href='/widgets/' +w.id)= w.name
+            -}) 
             li
               a(href="/widgets/new") Add new widget
 

@@ -28,13 +28,14 @@ exports.show = function (req, res) {
       cb(null);
     });
   }, function (err) {
-    console.log(arr_widgetHTML[0]);
+
+    req.session.screen.widgets = arr_widgetHTML;
 
     var data = {
         username: req.session.user.username,
         title: 'Screen : '+req.session.screen.name,
-        widgets: arr_widgetHTML,
         screens: req.session.screens,
+        widgets: req.session.widgets,
         screen: req.session.screen
       };
 

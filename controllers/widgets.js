@@ -24,7 +24,9 @@ exports.show = function (req, res) {
 		    username: req.session.user.username,
 		    title  : 'Widget : ' + widget.name,
 		    widget : widget,
-		    screens: req.session.screens
+		    screens: req.session.screens,
+        	widgets: req.session.widgets
+
 		};	
 		res.render('widgets/show', data);
 
