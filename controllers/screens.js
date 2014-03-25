@@ -19,8 +19,12 @@ exports.show = function (req, res) {
 
   async.each(screen.widgets, function (widget, cb) {
   	console.log( "Screen Widget: " + widget);
-    widgetUtil.render_widget(widget, function (w_html) {
-      arr_widgetHTML.push(w_html);
+    widgetUtil.render_widget(widget, function (err, w_html) {
+      if(!err)
+        arr_widgetHTML.push(w_html);
+      else{
+        console.log("Failed to render widget " +  widget.id  + " : "+  err);
+      }
       cb(null);
     });
   }, function (err) {
@@ -28,7 +32,7 @@ exports.show = function (req, res) {
 
     var data = {
         username: req.session.user.username,
-        title: 'Screen : ',
+        title: 'Screen : '+req.session.screen.name,
         widgets: arr_widgetHTML,
         screens: req.session.screens,
         screen: req.session.screen

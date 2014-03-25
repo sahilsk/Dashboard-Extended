@@ -6,6 +6,8 @@ var widget = require("./controllers/widgets");
 
 var authMWare = require("./lib/auth_middleware");
 var screenMWare = require("./lib/screen_middleware");
+var widgetMWare = require("./lib/widget_middleware");
+
 
 
 module.exports = function(app){

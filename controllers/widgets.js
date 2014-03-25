@@ -1,5 +1,36 @@
+var widgetUtil = require('../lib/widget_util.js');
+
 exports.show = function (req, res) {
-  res.send('W.I.P');
+  
+	var async = require('async');
+	if (!req.session.widget) {
+	req.session.messages = { errors: ['widget not found'] };
+	res.redirect('/');
+	return;
+	}
+
+	widgetUtil.render_widget(req.session.widget, function (err, w_html) {
+
+		if(err){
+			console.log("Failed to render html: ", err);
+			widget.html = "Failed to render html: " + err;
+		}else{
+			console.log("Rendered widget===================== " + w_html)
+		 	var widget = req.session.widget;
+		 	widget.html = w_html
+		
+		}
+		var data = {
+		    username: req.session.user.username,
+		    title  : 'Widget : ' + widget.name,
+		    widget : widget,
+		    screens: req.session.screens
+		};	
+		res.render('widgets/show', data);
+
+	});
+
+
 };
 exports.new = function (req, res) {
   var data = {
@@ -18,7 +49,7 @@ exports.create = function (req, res) {
 	 	pre_data: formData.pre_data,
 	 	post_data: formData.post_data,
 	 	validation_schema: formData.data_schema,
-	 	repr_scheme:  formData.rep_scheme,
+	 	repr_scheme:  formData.repr_scheme,
 	 	refreshInterval: parseInt(formData.update_freq)
 	 }
 	
@@ -46,7 +77,6 @@ exports.create = function (req, res) {
 
 	console.log( "Widget To Save: %j", t_widget);
 	var Widget = require('../models/widget');
-
 
 
 	Widget.save( t_widget, function(err, screen){

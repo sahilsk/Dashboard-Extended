@@ -10,7 +10,7 @@ h1 Create New Widget
 
 form(method='POST', action='/widgets/create', class="form-horizontal", role="form")
 	.form-group
-		label(for="name", class="col-sm-2 control-label") URL
+		label(for="name", class="col-sm-2 control-label") Name
 		.col-sm-10
 			input( type="text", class="form-control",name="name", id="name", placeholder="eg. Docker Images 01")
 
@@ -40,9 +40,9 @@ form(method='POST', action='/widgets/create', class="form-horizontal", role="for
 			textarea( class="form-control" rows="3", id="data_schema" , name="data_schema") 
 
 	.form-group
-		label(for="rep_scheme", class="col-sm-2 control-label") Representational Scheme
+		label(for="repr_scheme", class="col-sm-2 control-label") Representational Scheme
 		.col-sm-10
-			select( class="form-control" rows="3", id="rep_scheme" , name="rep_scheme")
+			select( class="form-control" rows="3", id="repr_scheme" , name="repr_scheme")
 				option Table
 
 

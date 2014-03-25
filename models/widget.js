@@ -212,6 +212,8 @@ var Widget = {
 					callback(err, null);
 					return;
 				}else{
+					widget.repr_setting = JSON.stringify(widget.repr_setting);
+
 					//VALIDATION PASSED
 					var timestamp = +new Date;
 					var redisTransaction = redisClient.multi();
@@ -241,7 +243,9 @@ var Widget = {
 	find: function(id, callback){
 
 		console.log( TABLE_NAME.singular + ":" + id );
-		redisClient.hgetall( TABLE_NAME.singular + ":" + id, function(err, res){ callback(err, res) } );
+		redisClient.hgetall( TABLE_NAME.singular + ":" + id, function(err, res){ 
+			callback(err, res) ;
+		});
 	},
 	destroy: function(obj, callback){
 		redisClient.multi()
