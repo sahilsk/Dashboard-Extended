@@ -246,7 +246,32 @@ var Screen = {
 			})
 
 	},
+	addWidgets  : function(screen_id, widgets, callback){
 
+		if( widgets === null ){
+			callback(null)
+			return;
+		}
+
+
+		var arg = [TABLE_NAME.singular + "_widgets:" + screen_id];
+		if( widgets instanceof Array){
+			for(var i =0; i < widgets.length; i++){
+				arg.push( +new Date)
+				arg.push(widgets[i]);
+			}
+		}else{
+			arg.push( +new Date);
+			arg.push(widgets)
+		}
+		console.log(arg)
+
+		redisClient.del( TABLE_NAME.singular + "_widgets:" + screen_id )
+		redisClient.zadd( arg, function(err, res){
+			callback(err, res);
+		} )
+
+	},
 
 	destroy: function(obj, callback){
 		redisClient.multi()

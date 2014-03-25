@@ -15,7 +15,7 @@ exports.show = function (req, res) {
 			console.log("Failed to render html: ", err);
 			widget.html = "Failed to render html: " + err;
 		}else{
-			console.log("Rendered widget===================== " + w_html)
+			//console.log("Rendered widget===================== " + w_html)
 		 	var widget = req.session.widget;
 		 	widget.html = w_html
 		
@@ -38,7 +38,9 @@ exports.new = function (req, res) {
   var data = {
       username: req.session.user.username,
       title: 'Widget : New',
-      screens: req.session.screens    };
+      screens: req.session.screens,
+      widgets:req.session.widgets
+    };
   res.render('widgets/new', data);
 };
 exports.create = function (req, res) {
@@ -55,7 +57,7 @@ exports.create = function (req, res) {
 	 	refreshInterval: parseInt(formData.update_freq)
 	 }
 	
-	switch( formData.rep_scheme){
+	switch( formData.repr_scheme){
 		case "Table":
 			t_widget.repr_setting = {
 				columns: [],

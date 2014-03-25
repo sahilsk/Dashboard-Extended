@@ -242,7 +242,7 @@ var Widget = {
 
 	find: function(id, callback){
 
-		console.log( TABLE_NAME.singular + ":" + id );
+		//console.log( TABLE_NAME.singular + ":" + id );
 		redisClient.hgetall( TABLE_NAME.singular + ":" + id, function(err, res){ 
 			callback(err, res) ;
 		});

@@ -18,7 +18,6 @@ exports.show = function (req, res) {
   var widgetUtil = require('../lib/widget_util.js');
 
   async.each(screen.widgets, function (widget, cb) {
-  	console.log( "Screen Widget: " + widget);
     widgetUtil.render_widget(widget, function (err, w_html) {
       if(!err)
         arr_widgetHTML.push(w_html);
@@ -48,7 +47,8 @@ exports.new = function (req, res) {
   var data = {
       username: req.session.user.username,
       title: 'Screen : Create New',
-      screens: req.session.screens
+      screens: req.session.screens,
+      widgets:req.session.widgets
     };
   res.render('screens/new', data);
 };
@@ -86,9 +86,38 @@ exports.create = function (req, res) {
 };
 
 exports.addWidget = function(req, res){
+  var data = {
+      username: req.session.user.username,
+      title: 'Screen : Create New',
+      screens: req.session.screens,
+      screen:req.session.screen,
+      widgets:req.session.widgets
+  };
+  res.render("screens/widgets/add", data)
+};
+
+exports.updateWidgets = function(req, res){
+
+   // res.send("widgets size: " + req.body.widgets.length +" Instance of " +( req.body.widgets instanceof Array))
+   // return;
+    var Screen = require("../models/screen.js")
+    Screen.addWidgets(req.params.id, req.body.widgets, function(err, suc){
+      if(err){
+        console.log("Error adding widgets to the screen: ", err);
+        req.session.messages = { errors: ["Error adding widgets to the screen: " + err] };
+        res.redirect("/screens/"+req.params.id + "/widgets/add");
+
+      }else{
+        console.log(" Widgets added successfully!!")
+        req.session.messages = { success: [ "Widgets added successfully!!"] };
+        res.redirect("/screens/"+req.params.id );
+      }
+
+    })
 
 
 }
+
 
 
 exports.removeWidget = function(req, res){

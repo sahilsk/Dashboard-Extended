@@ -22,8 +22,11 @@ module.exports = function(app){
 //SCREENS: CREATE, EDIT, DELETE, UPDATE
 	app.get('/screens/new', [authMWare.isLoggedIn,widgetMWare.all, screenMWare.all], screen.new);
 	app.post('/screens/create', [authMWare.isLoggedIn, widgetMWare.all, screenMWare.all], screen.create);
-	app.get('/screens/:id', [authMWare.isLoggedIn,screenMWare.all,widgetMWare.all, screenMWare.fetchScreen ], screen.show);
+	app.get('/screens/:id', [authMWare.isLoggedIn,screenMWare.all, widgetMWare.all, screenMWare.fetchScreen ], screen.show);
 	app.del('/screens/:id', [authMWare.isLoggedIn, widgetMWare.all], screen.delete);
+
+	app.get('/screens/:id/widgets/add',  [authMWare.isLoggedIn,screenMWare.all, widgetMWare.all, screenMWare.fetchScreen ], screen.addWidget);
+	app.post('/screens/:id/widgets/add',  [authMWare.isLoggedIn,screenMWare.all, widgetMWare.all, screenMWare.fetchScreen ], screen.updateWidgets);
 
 
 //WIDGETS: CREATE, EDIT, DELETE, UPDATE
