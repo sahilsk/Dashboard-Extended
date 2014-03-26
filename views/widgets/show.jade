@@ -5,12 +5,9 @@ block content
 		span(class="label label-default") #{widget.name}
 
 	.row.placeholders
-		a(href="/widgets/new") Add New Widget
 		Br
-		form(method="post", action="/widgets/#{widget.id}" )
-			input(type="hidden", name="_method", value="DELETE")
-			button( type="submit", class="btn btn-default") Delete Widget 
-
 		//show widgets
 		!=widget.html
-		
+		form(method="post", action="/widgets/#{widget.id}" )
+			input(type="hidden", name="_method", value="DELETE")
+			button( type="submit", class="btn btn-danger") Delete Widget 		
