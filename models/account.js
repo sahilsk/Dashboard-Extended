@@ -17,8 +17,9 @@ SADD email:xxx  ID
 
 #########  DATABASE
 
-HMSET user:
-
+HMSET user:12345 id:12345 username admin password admin email sonukr666@gmail.com
+sadd username:admin 12345
+sadd email:sonukr666@gmail.com 12345
 
 */
 
