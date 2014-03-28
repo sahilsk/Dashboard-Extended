@@ -1,3 +1,4 @@
+var util = require("util")
 var widgetUtil = require('../lib/widget_util.js');
 
 exports.show = function (req, res) {
@@ -10,13 +11,15 @@ exports.show = function (req, res) {
 	}
 
 	widgetUtil.render_widget(req.session.widget, function (err, w_html) {
+	 	var widget = req.session.widget;
 
 		if(err){
 			console.log("Failed to render html: ", err);
 			widget.html = "Failed to render html: " + err;
+			req.session.messages = { errors: ["Failed to render: " + err]}
+
 		}else{
 			//console.log("Rendered widget===================== " + w_html)
-		 	var widget = req.session.widget;
 		 	widget.html = w_html
 		
 		}
@@ -63,20 +66,26 @@ exports.create = function (req, res) {
 				columns: [],
 				showRowNumber: !parseInt(formData.hideRowNumber)
 			}
-
-			formData.table_cols.split(";").forEach( function(colStr){
-				var col = colStr.split(":")
-				t_widget.repr_setting.columns.push( 
-					{	name: col[0].trim(),  type: col[1].trim()	}
-				);		
-
-			})
+			try{
+				formData.table_cols.split(";").forEach( function(colStr){
+					var col = colStr.split(":")
+					t_widget.repr_setting.columns.push( 
+						{	name: col[0].trim(),  type: col[1].trim()	}
+					);		
+				})
+			}catch(e){
+				console.log("Unsupported representational scheme setting");
+				req.session.messages = { errors: ["Unsupported representational scheme setting"]}
+				res.redirect("/widgets/new")	
+				return;		
+			}
 
 			break;
 		default:
 			console.log("Unsupported representational scheme");
-			req.session.messages = { errors: "Unsupported representational scheme"}
+			req.session.messages = { errors: ["Unsupported representational scheme"] }
 			res.redirect("/widgets/new")
+			return;
 	}
 
 	console.log( "Widget To Save: %j", t_widget);
@@ -98,10 +107,35 @@ exports.create = function (req, res) {
 			res.redirect('widgets/new');
 			return;
 		}
-	});
-
-
-  
+	});  
 };
+
+
+
 exports.load_widget = function (id, params) {
+
+};
+
+
+//TODO 
+// DO NOT DELETE IF USED IN SCREENS
+exports.delete = function (req, res) {
+  if (!req.session.widget) {
+    req.session.messages = { errors: ['widget not found'] };
+  } else {
+    var Widget = require('../models/widget');
+    Widget.destroy(req.session.widget, function(err){
+  		if(err){
+  			util.log("Failed to delete screen "+err);
+  			req.session.messages = { errors: ['Failed to delete screen. ' + err] };
+  		}else{
+  			util.log("Widget deleted successfully");
+  			req.session.messages = { success: ['Widget ' + req.session.widget.name + ' deleted successfully'] };
+  			req.session.widget = null;
+  		}
+  		  res.redirect('/');
+  		  return;
+	  });
+  }
+
 };

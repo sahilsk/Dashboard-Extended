@@ -23,6 +23,8 @@ exports.show = function (req, res) {
         arr_widgetHTML.push(w_html);
       else{
         console.log("Failed to render widget " +  widget.id  + " : "+  err);
+        req.session.messages = { errors: ["Failed to render widget " +  widget.id  + " : "+  err ] };
+
       }
       cb(null);
     });
@@ -112,17 +114,12 @@ exports.updateWidgets = function(req, res){
         req.session.messages = { success: [ "Widgets added successfully!!"] };
         res.redirect("/screens/"+req.params.id );
       }
-
     })
-
-
 }
 
 
 
 exports.removeWidget = function(req, res){
-	
-
 };
 
 exports.delete = function (req, res) {

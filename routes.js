@@ -33,5 +33,7 @@ module.exports = function(app){
 	app.get('/widgets/new', [authMWare.isLoggedIn, widgetMWare.all, screenMWare.all], widget.new);
 	app.post('/widgets/create', [authMWare.isLoggedIn, widgetMWare.all, screenMWare.all], widget.create);
 	app.get('/widgets/:id', [authMWare.isLoggedIn, widgetMWare.fetchWidget, widgetMWare.all, screenMWare.all ], widget.show);
+	app.del('/widgets/:id', [authMWare.isLoggedIn, widgetMWare.all], widget.delete);
+
 } 
 
