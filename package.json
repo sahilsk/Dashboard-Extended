@@ -27,7 +27,7 @@
   "homepage": "https://github.com/sahilsk/Dashboard-Extended",
   "private": true,
   "dependencies": {
-    "express": "3.4.8",
+    "express": "4.17.1",
     "jade": "~1.2.0",
     "node-sass": "~0.8.1",
     "node-uuid": "~1.4.1",
