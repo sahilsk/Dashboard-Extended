@@ -41,7 +41,7 @@
     "underscore": "~1.6.0",
     "uuid": "~1.4.1",
     "redis": "~0.10.1",
-    "handlebars": "~2.0.0-alpha.2",
+    "handlebars": "~4.7.6",
     "JSONStream": "~0.8.0",
     "request": "~2.88.2",
     "event-stream": "~3.1.0",
